@@ -1,15 +1,9 @@
-import Hero from "@/components/Hero";
-import Projects from "@/components/Projects";
-import Experience from "@/components/Experience";
-import Contact from "@/components/Contact";
+import TUIContainer from "@/components/TUIContainer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background text-text selection:bg-lavender selection:text-background">
-      <Hero />
-      <Experience />
-      <Projects />
-      <Contact />
+    <main className="min-h-screen bg-[#1e1e2e]">
+      <TUIContainer />
     </main>
   );
 }
