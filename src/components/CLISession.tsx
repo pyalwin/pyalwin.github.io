@@ -222,6 +222,7 @@ const openSourceData: Array<{
 
 const writingData: Array<{
   title: string;
+  summary: string;
   platform: string;
   date: string;
   url: string;
@@ -229,6 +230,7 @@ const writingData: Array<{
 }> = [
   {
     title: "Beyond RAG: Building Graph-Aware Retrieval for Contract Reasoning",
+    summary: "Why vector search alone fails on legal contracts, and how graph traversal over document structure fixes it.",
     platform: "dev.to",
     date: "Mar 2026",
     url: "https://dev.to/pyalwin/beyond-rag-building-graph-aware-retrieval-for-contract-reasoning-3o05",
@@ -245,6 +247,7 @@ const writingData: Array<{
   },
   {
     title: "Stop Chatting with Claude Code. Start Building on It.",
+    summary: "Claude Code as a programmable runtime — multi-agent pipelines, subprocess composition, and why the CLI is the API.",
     platform: "Medium",
     date: "Apr 2026",
     url: "https://medium.com/@arun_venkat/stop-chatting-with-claude-code-start-building-on-it-8b9a8e5c5732",
@@ -260,6 +263,7 @@ const writingData: Array<{
   },
   {
     title: "Claude Code CLI — The Interface That's Actually the Infrastructure",
+    summary: "How CLI flags become architectural decisions — scoped permissions, tool boundaries, and why the simplest interface is the most powerful.",
     platform: "Medium",
     date: "Apr 2026",
     url: "https://medium.com/@arun_venkat/build-on-the-cli-why-the-simplest-interface-is-the-most-powerful-be8753ad9a43",
@@ -275,6 +279,7 @@ const writingData: Array<{
   },
   {
     title: "CLAUDE.md — The File Claude Reads Before You Speak",
+    summary: "The file that shapes every session before you type a word — how to encode agent behaviour, conventions, and context that shouldn't need repeating.",
     platform: "Medium",
     date: "Apr 2026",
     url: "https://medium.com/@arun_venkat/claude-md-the-file-claude-reads-before-you-speak-1bbea5ccb59a",
@@ -290,6 +295,7 @@ const writingData: Array<{
   },
   {
     title: "Beyond Simple Prompts: Architecting an AI Agent",
+    summary: "AgreedPro deep-dive — paragraph anchoring, token-based Word diffing, and why determinism matters more than cleverness in production AI.",
     platform: "dev.to",
     date: "Dec 2025",
     url: "https://dev.to/pyalwin/beyond-simple-prompts-architecting-an-ai-agent-1i8c",
@@ -596,11 +602,8 @@ function WritingResponse() {
           className="stream-line pb-1"
           style={{ animationDelay: `${i * 0.1}s` }}
         >
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <span className="text-xs font-bold text-peach">{article.platform}</span>
-            <span className="text-xs text-subtext0">{article.date}</span>
-          </div>
-          <p className="mt-0.5 text-xs leading-5 text-text">{article.title}</p>
+          <p className="text-xs font-bold text-text">{article.title}</p>
+          <p className="mt-0.5 text-xs leading-5 text-subtext1">{article.summary}</p>
           <div className="mt-1 flex items-center gap-3">
             <button
               type="button"
