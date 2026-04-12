@@ -66,7 +66,7 @@ const projects: Array<{
     tech: ["Claude SDK", "MCP", "Docker", "Agents", "GitHub API"],
     icon: <Workflow className="text-peach" size={22} />,
     category: "Automation",
-    status: "🏆 innovation award @ Ottimate",
+    status: "automation @ Ottimate",
     image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=900&q=80",
     detail: {
       title: "Agentic Coding Bot",
@@ -74,7 +74,6 @@ const projects: Array<{
         { label: "why I built it", value: "A class of support tickets always followed the same pattern — customer reports odd behaviour, engineer reads the ticket, reads the code, figures out a one-line fix, opens a PR. I got annoyed enough to automate it." },
         { label: "how it works", value: "Claude Code agent reads the incoming ticket, navigates the relevant code, diagnoses the root cause, writes a targeted fix, and opens a PR with a proper description. Each run is containerised via Docker so it can't affect anything outside its scope. MCP integrations give it access to internal tools — no hardcoding." },
         { label: "what surprised me", value: "It makes smaller fixes than most engineers would. No scope creep, no refactoring things that weren't broken. Just the minimum change that solves the problem — which is exactly what you want in a support fix." },
-        { label: "recognition", value: "Won Ottimate's internal innovation award." },
         { label: "stack", value: "Claude SDK · MCP · Docker · GitHub API" },
       ],
     },

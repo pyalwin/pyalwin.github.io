@@ -29,7 +29,7 @@ const experienceData = [
     role: "Senior Software Engineer — Integrations Architect",
     period: "May 2022 – Present",
     description:
-      "Multi-tenant ERP integration platform — broad connector coverage, repeatable patterns that cut new integration from weeks to days. Also shipped: an AI code reviewer in CI/CD, an autonomous agent for support tickets (won the innovation award), and a company-wide Slack bot that answers questions across Notion, JIRA, code, and analytics.",
+      "Multi-tenant ERP integration platform — broad connector coverage, repeatable patterns that cut new integration from weeks to days. Also shipped: an AI code reviewer in CI/CD, an autonomous agent for support tickets, and a company-wide Slack bot that answers questions across Notion, JIRA, code, and analytics.",
     tech: ["ERP Integrations", "Multi-tenant Platform", "Python", "Claude API"],
   },
   {
@@ -95,7 +95,7 @@ const projectsData: Array<{
   {
     title: "Agentic Coding Bot",
     description:
-      "Autonomous Claude Code agent that handles customer support tickets end-to-end — triages issues, writes code, creates PRs. Won Ottimate's internal innovation award. Containerised execution with MCP integrations.",
+      "Autonomous Claude Code agent that handles customer support tickets end-to-end — triages issues, writes code, creates PRs. Containerised execution with MCP integrations.",
     tech: ["Claude SDK", "MCP", "Docker", "Agents", "GitHub API"],
     category: "Automation",
     detail: {
@@ -104,7 +104,6 @@ const projectsData: Array<{
         { label: "why I built it", value: "A class of support tickets always followed the same pattern — customer reports odd behaviour, engineer reads the ticket, reads the code, figures out a one-line fix, opens a PR. I got annoyed enough to automate it." },
         { label: "how it works", value: "Claude Code agent reads the incoming ticket, navigates the relevant code, diagnoses the root cause, writes a targeted fix, and opens a PR with a proper description. Each run is containerised via Docker so it can't affect anything outside its scope. MCP integrations give it access to internal tools — no hardcoding." },
         { label: "what surprised me", value: "It makes smaller fixes than most engineers would. No scope creep, no refactoring things that weren't broken. Just the minimum change that solves the problem — which is exactly what you want in a support fix." },
-        { label: "recognition", value: "Won Ottimate's internal innovation award." },
       ],
     },
   },

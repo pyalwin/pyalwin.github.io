@@ -9,7 +9,7 @@ const experience = [
     role: "Senior Software Engineer — Integrations Architect",
     period: "May 2022 - Present",
     location: "Bangalore, India",
-    description: "Architecting multi-tenant integration infrastructure across a broad set of ERP connectors. Built repeatable connector patterns that cut new ERP integration from weeks to days. Led customer-facing technical engagements — scoping, solution design, production debugging. Built an AI code reviewer in CI/CD via GitHub Actions, an autonomous Claude Code agent for support ticket handling and PR creation (internal innovation award), and a company-wide multi-agent Slack bot answering questions across Notion, JIRA, code, and analytics.",
+    description: "Architecting multi-tenant integration infrastructure across a broad set of ERP connectors. Built repeatable connector patterns that cut new ERP integration from weeks to days. Led customer-facing technical engagements — scoping, solution design, production debugging. Built an AI code reviewer in CI/CD via GitHub Actions, an autonomous Claude Code agent for support ticket handling and PR creation, and a company-wide multi-agent Slack bot answering questions across Notion, JIRA, code, and analytics.",
     tech: ["ERP Integrations", "Multi-tenant Platform", "Python", "Claude API", "GitHub Actions"],
     signal: "integrations architect",
   },
