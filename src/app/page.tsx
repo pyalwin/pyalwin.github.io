@@ -1,5 +1,9 @@
-import TUIContainer from "@/components/TUIContainer";
+import CLISession from "@/components/CLISession";
 
 export default function Home() {
-  return <TUIContainer />;
+  return (
+    <main className="min-h-screen bg-background">
+      <CLISession />
+    </main>
+  );
 }

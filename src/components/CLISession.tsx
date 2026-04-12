@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useContext, createContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
@@ -13,6 +13,10 @@ import {
   Terminal as TerminalIcon,
   Clock,
 } from "lucide-react";
+import DetailPanel, { type DetailItem } from "./DetailPanel";
+
+// ─── Explain Context ───────────────────────────────────────
+const ExplainContext = createContext<(item: DetailItem) => void>(() => {});
 
 const signalImage =
   "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1400&q=80";
@@ -46,7 +50,14 @@ const experienceData = [
   },
 ];
 
-const projectsData = [
+const projectsData: Array<{
+  title: string;
+  description: string;
+  tech: string[];
+  category: string;
+  github?: string;
+  detail: DetailItem;
+}> = [
   {
     title: "AgreedPro",
     description:
@@ -54,6 +65,16 @@ const projectsData = [
     tech: ["Python", "LangChain", "FAISS", "RAG"],
     category: "Data",
     github: "github.com/pyalwin",
+    detail: {
+      title: "AgreedPro",
+      rows: [
+        { label: "why I built it", value: "Every AI contract tool I tried would confidently cite a clause that either didn't exist or meant something different in context. For legal work, that's a liability issue, not a UX issue." },
+        { label: "the core mechanism", value: "Paragraph ID injection — every chunk gets a deterministic ID before indexing, and the model is required to cite it in its answer. A rule-based mapping layer traces that ID back to the exact source location. No hallucinated references, because the reference is structurally enforced." },
+        { label: "retrieval", value: "FAISS vector search for candidate retrieval, structured re-ranking to surface precedent clauses over just semantically similar ones, and query expansion to handle how lawyers ask questions differently to how contracts are written." },
+        { label: "architecture", value: "Multi-tenant with RBAC (admin / analyst / viewer roles), full audit logging, and configurable compliance playbooks per client so different teams can encode their own review criteria." },
+        { label: "status", value: "Active development — in conversations with legal teams about early pilots." },
+      ],
+    },
   },
   {
     title: "Ottimate Knowledge Bot",
@@ -61,6 +82,15 @@ const projectsData = [
       "Company-wide multi-agent Slack bot backed by Claude. Answers questions with cited sources across Notion docs, JIRA, codebase, and Clickhouse analytics — any engineer or PM can query internal knowledge without hunting through tabs.",
     tech: ["Claude API", "Slack SDK", "Python", "Multi-Agent", "Pinecone"],
     category: "Tools",
+    detail: {
+      title: "Ottimate Knowledge Bot",
+      rows: [
+        { label: "why I built it", value: "The answer to 'where is that documented?' was always 'somewhere in Notion, or maybe JIRA, or ask someone.' New engineers burned hours on questions a senior would answer in 30 seconds. I wanted that 30-second answer available at any hour." },
+        { label: "how it works", value: "Multi-agent system. Separate agents handle each source — Notion, JIRA, codebase, and Clickhouse analytics. A coordinator agent synthesises the results and every answer includes source citations so you can verify and dig deeper." },
+        { label: "the tricky part", value: "Deciding what's authoritative when sources conflict — Notion might say one thing, the code does another. We built a recency + source-priority model to handle that, with the codebase winning for anything implementation-related." },
+        { label: "status", value: "Running in production at Ottimate." },
+      ],
+    },
   },
   {
     title: "Agentic Coding Bot",
@@ -68,6 +98,15 @@ const projectsData = [
       "Autonomous Claude Code agent that handles customer support tickets end-to-end — triages issues, writes code, creates PRs. Won Ottimate's internal innovation award. Containerised execution with MCP integrations.",
     tech: ["Claude SDK", "MCP", "Docker", "Agents", "GitHub API"],
     category: "Automation",
+    detail: {
+      title: "Agentic Coding Bot",
+      rows: [
+        { label: "why I built it", value: "A class of support tickets always followed the same pattern — customer reports odd behaviour, engineer reads the ticket, reads the code, figures out a one-line fix, opens a PR. I got annoyed enough to automate it." },
+        { label: "how it works", value: "Claude Code agent reads the incoming ticket, navigates the relevant code, diagnoses the root cause, writes a targeted fix, and opens a PR with a proper description. Each run is containerised via Docker so it can't affect anything outside its scope. MCP integrations give it access to internal tools — no hardcoding." },
+        { label: "what surprised me", value: "It makes smaller fixes than most engineers would. No scope creep, no refactoring things that weren't broken. Just the minimum change that solves the problem — which is exactly what you want in a support fix." },
+        { label: "recognition", value: "Won Ottimate's internal innovation award." },
+      ],
+    },
   },
   {
     title: "EIA Review Tool",
@@ -75,16 +114,41 @@ const projectsData = [
       "Processes 1,000+ page regulatory documents with deterministic section ID mapping. Routes sections to appropriate model tiers by complexity and regulatory criticality — cost/accuracy balance at scale.",
     tech: ["Python", "Claude API", "Token Routing", "RAG"],
     category: "Data",
+    detail: {
+      title: "EIA Review Tool",
+      rows: [
+        { label: "why I built it", value: "Someone showed me what manual EIA review looks like — a consultant with a highlighter going through 900 pages, section by section, for weeks. Most of it is boilerplate. A small part is high-stakes. I wanted to build something that knows the difference." },
+        { label: "how it works", value: "Deterministic section ID mapping — every extracted fact references a specific location so nothing gets mis-attributed. Structured markdown ingestion preserves the document hierarchy rather than flattening it. Token routing: routine boilerplate sections go to a cost-optimised model, sections flagged as regulatory-critical go to a frontier model." },
+        { label: "the hard part", value: "EIA sections reference each other constantly — an impact in section 4 depends on a baseline from section 2 and mitigation measures buried in an appendix. Cross-reference resolution across that span is what I'm focused on now." },
+        { label: "status", value: "In development." },
+      ],
+    },
   },
 ];
 
-const openSourceData = [
+const openSourceData: Array<{
+  title: string;
+  description: string;
+  tech: string[];
+  github: string;
+  detail: DetailItem;
+}> = [
   {
     title: "Bifrost",
     description:
       "A desktop tool I built because I got tired of switching terminals. WebSocket streaming, approval flows, and a UI that stays out of your way.",
     tech: ["Electron", "React", "TypeScript", "WebSockets"],
     github: "github.com/pyalwin/bifrost",
+    detail: {
+      title: "Bifrost",
+      rows: [
+        { label: "why I built it", value: "I was using Claude Code every day and the raw CLI was getting painful — streaming output flying past, tool calls I couldn't pause, diffs I had to mentally reconstruct. I wanted a proper UI that stayed out of my way but gave me control when I needed it." },
+        { label: "what it does", value: "WebSocket streaming renders Claude's output in real time as it arrives. HITL tool approval flows — every tool call surfaces as an approve/reject before it executes. Live diff viewer shows exactly what will change in each file. Session management across multiple runs so you can jump back into earlier conversations." },
+        { label: "distribution", value: "Ships via Homebrew — one command install, runs as a native macOS app." },
+        { label: "stack", value: "Electron · React · TypeScript · WebSockets" },
+      ],
+      link: "https://github.com/pyalwin/bifrost",
+    },
   },
   {
     title: "Codemesh",
@@ -92,6 +156,17 @@ const openSourceData = [
       "Code knowledge graph for AI coding agents. Indexes with Tree-sitter, exposes an MCP server, and lets agents write back what they learn — 44% cheaper, 57% faster exploration.",
     tech: ["TypeScript", "MCP", "Tree-sitter", "SQLite"],
     github: "github.com/pyalwin/codemesh",
+    detail: {
+      title: "Codemesh",
+      rows: [
+        { label: "why I built it", value: "I was watching Claude Code explore a codebase and it was doing the same grep-read-grep loop every session. It had already figured out the auth layer yesterday — it just couldn't remember. That felt like a solvable problem." },
+        { label: "how it works", value: "Tree-sitter parses the codebase into a structural graph — files, symbols, imports, call chains, all queryable. Agents hit the graph before reaching for Grep or Read. After reading a file, they write back a summary via codemesh_enrich. Next session, that context is already loaded." },
+        { label: "storage", value: "SQLite with FTS5 for zero-dependency local operation. The StorageBackend interface is swappable — Memgraph or Neo4j adapters can replace it without touching the tool layer." },
+        { label: "benchmarks", value: "Tested across 6 real codebases. Average answer quality 8.6/10 vs baseline 7.3/10. Up to 80% cost reduction on discovery-heavy tasks. 102 tests passing." },
+        { label: "two modes", value: "MCP Server for structured tool calls via Claude Code, or CLI mode via Bash for zero overhead — measurably cheaper and faster." },
+      ],
+      link: "https://github.com/pyalwin/codemesh",
+    },
   },
   {
     title: "Cortex",
@@ -99,6 +174,16 @@ const openSourceData = [
       "Extracts structured data from messy documents using graph techniques. When one model isn't enough, route to the right one. Built for the documents nobody wants to read.",
     tech: ["Multi-Agent", "GraphRAG", "LangGraph", "Python"],
     github: "github.com/pyalwin/cortex",
+    detail: {
+      title: "Cortex",
+      rows: [
+        { label: "why I built it", value: "Flat extraction falls apart when a field depends on context from three other sections. Most pipelines ignore that and get it wrong. I wanted something that actually models how the document is structured." },
+        { label: "how it works", value: "GraphRAG builds a context graph over the document — entities, relationships, cross-references across sections. A cost-optimised baseline model (langextract) handles routine fields. When it hits ambiguous or cross-referenced entities, LangGraph routes to a frontier model for disambiguation." },
+        { label: "cost optimisation", value: "Token routing achieves 60%+ cost reduction per document compared to running everything through a frontier model — without sacrificing accuracy on the hard cases." },
+        { label: "observability", value: "HITL confidence scoring on every extraction. Low-confidence outputs surface for human review, and that feedback tightens the routing thresholds over time." },
+      ],
+      link: "https://github.com/pyalwin/cortex",
+    },
   },
   {
     title: "EngramDB",
@@ -106,6 +191,16 @@ const openSourceData = [
       "Schema-aware hybrid retrieval engine — 92.8% recall vs 68.2% vector-only on CUAD contracts. Combines vector search with graph traversal over document structure.",
     tech: ["Python", "DuckDB", "GraphRAG", "Vector Search"],
     github: "github.com/pyalwin/engramdb",
+    detail: {
+      title: "EngramDB",
+      rows: [
+        { label: "why I built it", value: "Testing RAG on legal contracts kept hitting the same failure — cross-reference questions would fail because vector search finds semantically similar text, not structurally referenced text. Those aren't the same thing." },
+        { label: "how it works", value: "Two-stage hybrid retrieval. Vector search (FAISS) narrows the candidate set first. Then graph traversal takes over — following the document's own section hierarchy, defined term links, and explicit cross-references to pull in the complete context the answer depends on." },
+        { label: "storage layer", value: "DuckDB for zero-dependency local operation. Keeps the whole retrieval pipeline in-process without needing a separate vector database or graph server." },
+        { label: "benchmarks", value: "92.8% recall (hybrid) vs 68.2% (vector-only) on 35 CUAD contracts. +34 percentage points on cross-reference queries specifically. 183 multi-hop questions." },
+      ],
+      link: "https://github.com/pyalwin/engramdb",
+    },
   },
   {
     title: "Frameforge",
@@ -113,39 +208,102 @@ const openSourceData = [
       "MCP server that generates UI mockup PNGs via Gemini image API. Published on npm — plugs into Claude Code as a stdio tool.",
     tech: ["TypeScript", "MCP", "Gemini API", "npm"],
     github: "github.com/pyalwin/frameforge",
+    detail: {
+      title: "Frameforge",
+      rows: [
+        { label: "why I built it", value: "The UI design loop with an AI agent is slow — describe what you want, agent writes code, you run it, realise it looks wrong, describe the change. I wanted to short-circuit that by letting the agent show a rough mockup before anyone writes a line of code." },
+        { label: "how it works", value: "Exposes a single MCP tool — generate_ui_mockup. The agent describes a layout in natural language, Frameforge calls Gemini's image generation API, and returns a PNG the agent can reference in context. Visual alignment before implementation." },
+        { label: "protocol", value: "Runs as a stdio MCP server — the standard transport for Claude Code tool integrations. No separate process to manage, no network setup." },
+        { label: "to install", value: "Published on npm. One config line in your Claude Code MCP settings and it's available as a native tool." },
+      ],
+      link: "https://github.com/pyalwin/frameforge",
+    },
   },
 ];
 
-const writingData = [
+const writingData: Array<{
+  title: string;
+  platform: string;
+  date: string;
+  url: string;
+  detail: DetailItem;
+}> = [
   {
     title: "Beyond RAG: Building Graph-Aware Retrieval for Contract Reasoning",
     platform: "dev.to",
     date: "Mar 2026",
-    url: "https://dev.to/pyalwin",
+    url: "https://dev.to/pyalwin/beyond-rag-building-graph-aware-retrieval-for-contract-reasoning-3o05",
+    detail: {
+      title: "Beyond RAG: Graph-Aware Retrieval",
+      rows: [
+        { label: "what made me write it", value: "I kept hitting the same failure mode — RAG would find something semantically similar but miss the actual answer because it lived in a cross-referenced section. I wanted to write down why that happens and what actually fixes it." },
+        { label: "the core argument", value: "Documents aren't bags of text. They have structure — headings, defined terms, clauses that reference other clauses. If your retrieval layer ignores that structure, it misses the answers that depend on following it. Vector search alone can't do that." },
+        { label: "what I built", value: "EngramDB — a retrieval engine that runs vector search first, then uses graph traversal over document structure to resolve full context. Tested on 35 CUAD contracts, 183 multi-hop questions." },
+        { label: "the numbers", value: "92.8% recall with hybrid retrieval vs 68.2% with vector-only. +34 percentage points on cross-reference queries specifically." },
+      ],
+      link: "https://dev.to/pyalwin/beyond-rag-building-graph-aware-retrieval-for-contract-reasoning-3o05",
+    },
   },
   {
     title: "Stop Chatting with Claude Code. Start Building on It.",
     platform: "Medium",
     date: "Apr 2026",
-    url: "https://medium.com/@arun_venkat",
+    url: "https://medium.com/@arun_venkat/stop-chatting-with-claude-code-start-building-on-it-8b9a8e5c5732",
+    detail: {
+      title: "Stop Chatting with Claude Code",
+      rows: [
+        { label: "what made me write it", value: "I spent a year using Claude Code mostly as a chat window. Then a project forced me to use it differently — spawning it as a subprocess, piping output to other tools — and I realised I'd been leaving most of it on the table." },
+        { label: "the argument", value: "Claude Code is a programmable runtime, not a chatbot. You can spawn sub-agents with scoped permissions, compose their output with other processes, and build multi-step pipelines where Claude handles one stage of many. The CLI is the API." },
+        { label: "what it covers", value: "Concrete patterns: spawning Claude Code as a subprocess with --print for structured output, building pipelines where each agent has a single task, session persistence across pipeline stages, and how to think about tool access as a design decision." },
+      ],
+      link: "https://medium.com/@arun_venkat/stop-chatting-with-claude-code-start-building-on-it-8b9a8e5c5732",
+    },
   },
   {
     title: "Claude Code CLI — The Interface That's Actually the Infrastructure",
     platform: "Medium",
     date: "Apr 2026",
-    url: "https://medium.com/@arun_venkat",
+    url: "https://medium.com/@arun_venkat/build-on-the-cli-why-the-simplest-interface-is-the-most-powerful-be8753ad9a43",
+    detail: {
+      title: "Claude Code CLI as Infrastructure",
+      rows: [
+        { label: "what made me write it", value: "While building a multi-agent pipeline I realised I was making architectural decisions through CLI flags — which tools each agent could access, what files it could write, what was completely off limits. That's not configuration. That's system design." },
+        { label: "the argument", value: "The CLI is the trust boundary. When you decide what tools Claude Code can access for a given task, you're defining what the agent is allowed to do — which is an infrastructure decision, not a preference. The tool boundary is the architectural boundary." },
+        { label: "practical implications", value: "Different agents in a pipeline can have entirely different tool access. An agent that reviews code doesn't need write access. An agent writing to disk doesn't need network access. This isn't limiting — it's how you build agents you can actually trust to run." },
+      ],
+      link: "https://medium.com/@arun_venkat/build-on-the-cli-why-the-simplest-interface-is-the-most-powerful-be8753ad9a43",
+    },
   },
   {
     title: "CLAUDE.md — The File Claude Reads Before You Speak",
     platform: "Medium",
     date: "Apr 2026",
-    url: "https://medium.com/@arun_venkat",
+    url: "https://medium.com/@arun_venkat/claude-md-the-file-claude-reads-before-you-speak-1bbea5ccb59a",
+    detail: {
+      title: "CLAUDE.md — Before You Speak",
+      rows: [
+        { label: "what made me write it", value: "I watched someone get frustrated because Claude kept doing something they didn't want. They'd correct it, it would do it again next session. The fix was a two-line addition to CLAUDE.md — a file they didn't know existed." },
+        { label: "the point", value: "CLAUDE.md is read before every session, before anything you type. It's not a settings file — it's where you engineer the agent's default behaviour. Whatever you put in there shapes how Claude interprets every instruction that follows." },
+        { label: "how it layers", value: "Global CLAUDE.md for preferences that apply everywhere. Project-level for codebase context and conventions. Directory-level for specific subsystems. The most specific file wins, so you can override globally without touching per-project config." },
+      ],
+      link: "https://medium.com/@arun_venkat/claude-md-the-file-claude-reads-before-you-speak-1bbea5ccb59a",
+    },
   },
   {
     title: "Beyond Simple Prompts: Architecting an AI Agent",
     platform: "dev.to",
     date: "Dec 2025",
-    url: "https://dev.to/pyalwin",
+    url: "https://dev.to/pyalwin/beyond-simple-prompts-architecting-an-ai-agent-1i8c",
+    detail: {
+      title: "Architecting an AI Agent",
+      rows: [
+        { label: "what made me write it", value: "I'd shipped AgreedPro to early users and the feedback wasn't about answer quality — it was about trust. They wanted to know how it got there. That pushed me to think harder about what makes an AI agent something people will actually rely on." },
+        { label: "the main argument", value: "Getting an agent to produce good outputs is the easier half. The harder half is building something so that when it's wrong, you know it's wrong. That requires determinism — tracing every output back to a source, not hoping the model got it right." },
+        { label: "paragraph anchoring", value: "Every chunk in AgreedPro gets a deterministic source ID injected before it hits the vector index. The model is required to cite that ID in its answer. A rule-based mapping layer traces the ID back to the exact paragraph. The citation is structurally enforced — it either exists or it doesn't." },
+        { label: "token-based Word diffing", value: "Legal review happens on Word documents with tracked changes. I built a token-level differ that preserves insertions, deletions, and move operations from the XML layer — so the agent sees 'proposed clause 4.2 replaces accepted clause 4.1' rather than just the final text." },
+      ],
+      link: "https://dev.to/pyalwin/beyond-simple-prompts-architecting-an-ai-agent-1i8c",
+    },
   },
 ];
 
@@ -326,6 +484,7 @@ function ExperienceResponse() {
 }
 
 function ProjectsResponse() {
+  const onExplain = useContext(ExplainContext);
   return (
     <ToolBlock label="selected_projects.py" count={projectsData.length}>
       {projectsData.map((proj, i) => (
@@ -350,16 +509,26 @@ function ProjectsResponse() {
                 {t}
               </span>
             ))}
-            {proj.github && (
-              <a
-                href={`https://${proj.github}`}
-                target="_blank"
-                rel="noreferrer"
-                className="ml-auto flex items-center gap-1 text-xs text-subtext0 transition hover:text-sky"
+            <div className="ml-auto flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onExplain(proj.detail)}
+                className="flex items-center gap-1 text-xs text-sky transition hover:text-sky/80"
               >
-                source <ArrowUpRight size={12} />
-              </a>
-            )}
+                <Sparkles size={11} />
+                /explain
+              </button>
+              {proj.github && (
+                <a
+                  href={`https://${proj.github}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 text-xs text-subtext0 transition hover:text-sky"
+                >
+                  source <ArrowUpRight size={12} />
+                </a>
+              )}
+            </div>
           </div>
         </div>
       ))}
@@ -368,6 +537,7 @@ function ProjectsResponse() {
 }
 
 function OpenSourceResponse() {
+  const onExplain = useContext(ExplainContext);
   return (
     <ToolBlock label="open_source.sh" count={openSourceData.length}>
       {openSourceData.map((repo, i) => (
@@ -392,14 +562,24 @@ function OpenSourceResponse() {
                 {t}
               </span>
             ))}
-            <a
-              href={`https://${repo.github}`}
-              target="_blank"
-              rel="noreferrer"
-              className="ml-auto flex items-center gap-1 text-xs text-subtext0 transition hover:text-green"
-            >
-              source <ArrowUpRight size={12} />
-            </a>
+            <div className="ml-auto flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onExplain(repo.detail)}
+                className="flex items-center gap-1 text-xs text-green transition hover:text-green/80"
+              >
+                <Sparkles size={11} />
+                /explain
+              </button>
+              <a
+                href={`https://${repo.github}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 text-xs text-subtext0 transition hover:text-green"
+              >
+                source <ArrowUpRight size={12} />
+              </a>
+            </div>
           </div>
         </div>
       ))}
@@ -408,6 +588,7 @@ function OpenSourceResponse() {
 }
 
 function WritingResponse() {
+  const onExplain = useContext(ExplainContext);
   return (
     <ToolBlock label="writing.md" count={writingData.length}>
       {writingData.map((article, i) => (
@@ -421,14 +602,24 @@ function WritingResponse() {
             <span className="text-xs text-subtext0">{article.date}</span>
           </div>
           <p className="mt-0.5 text-xs leading-5 text-text">{article.title}</p>
-          <a
-            href={article.url}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-1 flex items-center gap-1 text-xs text-subtext0 transition hover:text-peach"
-          >
-            read <ArrowUpRight size={12} />
-          </a>
+          <div className="mt-1 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => onExplain(article.detail)}
+              className="flex items-center gap-1 text-xs text-peach transition hover:text-peach/80"
+            >
+              <Sparkles size={11} />
+              /explain
+            </button>
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1 text-xs text-subtext0 transition hover:text-peach"
+            >
+              read <ArrowUpRight size={12} />
+            </a>
+          </div>
         </div>
       ))}
     </ToolBlock>
@@ -877,6 +1068,7 @@ function MessageBlock({
 // ─── Main Component ────────────────────────────────────────
 
 export default function CLISession() {
+  const [selected, setSelected] = useState<DetailItem | null>(null);
   const [currentPair, setCurrentPair] = useState<{
     commandMsg: Message;
     responseMsg: Message | null;
@@ -1045,7 +1237,9 @@ export default function CLISession() {
 
       if (e.key === "Escape") {
         e.preventDefault();
-        if (isAutoRunning) {
+        if (selected) {
+          setSelected(null);
+        } else if (isAutoRunning) {
           setIsAutoRunning(false);
           setTimeout(() => inputRef.current?.focus(), 100);
         }
@@ -1059,7 +1253,7 @@ export default function CLISession() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isAutoRunning]);
+  }, [isAutoRunning, selected]);
 
   // ── focus input when auto-run stops ──
 
@@ -1098,6 +1292,7 @@ export default function CLISession() {
   })();
 
   return (
+    <ExplainContext.Provider value={setSelected}>
     <div className="fixed inset-0 flex flex-col bg-background font-mono text-sm text-text">
       {/* ── Header bar ── */}
       <header className="z-50 flex h-9 shrink-0 items-center gap-2 overflow-x-auto border-b border-line bg-panel px-3 text-[11px] text-subtext1 no-scrollbar sm:px-4">
@@ -1312,5 +1507,7 @@ export default function CLISession() {
         </div>
       </div>
     </div>
+    <DetailPanel item={selected} onClose={() => setSelected(null)} />
+    </ExplainContext.Provider>
   );
 }
