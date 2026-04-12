@@ -25,8 +25,8 @@ const experienceData = [
     role: "Senior Software Engineer — Integrations Architect",
     period: "May 2022 – Present",
     description:
-      "70,000+ invoices/day, 50+ ERP connectors — QuickBooks, Sage, Dynamics 365, NetSuite, Xero. Cut new connector dev from weeks to days. Also shipped: an AI code reviewer in CI/CD, an autonomous agent for support tickets (won the innovation award), and a company-wide Slack bot that answers questions across Notion, JIRA, code, and analytics.",
-    tech: ["QuickBooks", "Sage Intacct", "Dynamics 365", "NetSuite", "Xero", "Claude API"],
+      "Multi-tenant ERP integration platform — broad connector coverage, repeatable patterns that cut new integration from weeks to days. Also shipped: an AI code reviewer in CI/CD, an autonomous agent for support tickets (won the innovation award), and a company-wide Slack bot that answers questions across Notion, JIRA, code, and analytics.",
+    tech: ["ERP Integrations", "Multi-tenant Platform", "Python", "Claude API"],
   },
   {
     company: "Idealoom Technologies",

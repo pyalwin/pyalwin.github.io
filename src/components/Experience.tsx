@@ -9,8 +9,8 @@ const experience = [
     role: "Senior Software Engineer — Integrations Architect",
     period: "May 2022 - Present",
     location: "Bangalore, India",
-    description: "Architecting multi-tenant integration infrastructure processing 70,000+ invoices/day across 50+ ERP connectors (QuickBooks, Sage Intacct, Dynamics 365, NetSuite, Xero). Built repeatable connector patterns that cut new ERP integration from weeks to days. Led customer-facing technical engagements — scoping, solution design, production debugging. Built an AI code reviewer in CI/CD via GitHub Actions, an autonomous Claude Code agent for support ticket handling and PR creation (internal innovation award), and a company-wide multi-agent Slack bot answering questions across Notion, JIRA, code, and Clickhouse analytics.",
-    tech: ["QuickBooks", "Sage Intacct", "Dynamics 365", "NetSuite", "Xero", "Python", "Claude API", "GitHub Actions"],
+    description: "Architecting multi-tenant integration infrastructure across a broad set of ERP connectors. Built repeatable connector patterns that cut new ERP integration from weeks to days. Led customer-facing technical engagements — scoping, solution design, production debugging. Built an AI code reviewer in CI/CD via GitHub Actions, an autonomous Claude Code agent for support ticket handling and PR creation (internal innovation award), and a company-wide multi-agent Slack bot answering questions across Notion, JIRA, code, and analytics.",
+    tech: ["ERP Integrations", "Multi-tenant Platform", "Python", "Claude API", "GitHub Actions"],
     signal: "integrations architect",
   },
   {
@@ -51,7 +51,7 @@ export default function Experience() {
               <span className="font-bold">Current focus</span>
             </div>
             <p className="text-sm leading-6 text-subtext1">
-              Integration infrastructure at scale — 70k+ invoices/day, 50+ ERP connectors, and production GenAI systems shipping in enterprise environments.
+              Integration infrastructure at scale — multi-tenant ERP platform, repeatable connector patterns, and production GenAI systems shipping in enterprise environments.
             </p>
           </div>
         </div>
