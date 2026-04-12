@@ -32,8 +32,8 @@ const repos: Array<{
       title: "Bifrost",
       rows: [
         { label: "why I built it", value: "I was using Claude Code every day and the raw CLI was getting painful — streaming output flying past, tool calls I couldn't pause, diffs I had to mentally reconstruct. I wanted a proper UI that stayed out of my way but gave me control when I needed it." },
-        { label: "what it does", value: "WebSocket streaming so the output renders in real time. Tool approval flows so I can review each action before it runs — useful when the agent is about to do something I'm not sure about. Live diff viewer. Session management so I can jump back into earlier runs." },
-        { label: "distribution", value: "Ships via Homebrew. One command install, runs as a native macOS app." },
+        { label: "what it does", value: "WebSocket streaming renders Claude's output in real time as it arrives. HITL tool approval flows — every tool call surfaces as an approve/reject before it executes, so you stay in control. Live diff viewer shows exactly what will change in each file. Session management and discovery across multiple runs so you can jump back into earlier conversations." },
+        { label: "distribution", value: "Ships via Homebrew — one command install, runs as a native macOS app." },
         { label: "stack", value: "Electron · React · TypeScript · WebSockets" },
         { label: "status", value: "Open source, actively used." },
       ],
@@ -53,10 +53,11 @@ const repos: Array<{
     detail: {
       title: "Codemesh",
       rows: [
-        { label: "why I built it", value: "I was watching Claude Code explore a codebase and realised it was doing the same grep-read-grep loop every single session. It had already figured out how the auth layer worked yesterday — it just couldn't remember. That felt like a solvable problem." },
-        { label: "how it works", value: "Tree-sitter indexes the codebase into a graph — files, symbols, imports, call chains. Agents query the graph before reaching for Grep or Read. After they read something, they can write back a summary. Next session, that summary is already there." },
-        { label: "what the data says", value: "Ran it across 6 real codebases. Average quality went up, costs went down — on one task the agent was 80% cheaper and still got a better answer than baseline. The biggest wins are on trace and discovery tasks." },
-        { label: "two modes", value: "MCP Server for structured tool calls (works best with Opus), or plain CLI mode if you just want zero overhead (better with Sonnet, noticeably cheaper and faster)." },
+        { label: "why I built it", value: "I was watching Claude Code explore a codebase and it was doing the same grep-read-grep loop every session. It had already figured out the auth layer yesterday — it just couldn't remember. That felt like a solvable problem." },
+        { label: "how it works", value: "Tree-sitter parses the codebase into a structural graph — files, symbols, imports, call chains, all queryable. Agents hit the graph before reaching for Grep or Read. After reading a file, they write back a summary via codemesh_enrich. Next session, that context is already loaded." },
+        { label: "storage", value: "SQLite with FTS5 for zero-dependency local operation. The StorageBackend interface is swappable — Memgraph or Neo4j adapters can replace it without touching the tool layer." },
+        { label: "benchmarks", value: "Tested across 6 real codebases including VS Code, Excalidraw, and Swift Compiler. Average answer quality 8.6/10 vs baseline 7.3/10. Up to 80% cost reduction on discovery-heavy tasks. 102 tests passing." },
+        { label: "two modes", value: "MCP Server for structured tool calls via Claude Code (best with Opus), or CLI mode via Bash for zero overhead (best with Sonnet — measurably cheaper and faster)." },
         { label: "stack", value: "TypeScript · MCP · Tree-sitter · SQLite + FTS5" },
       ],
       link: "https://github.com/pyalwin/codemesh",
@@ -75,9 +76,10 @@ const repos: Array<{
     detail: {
       title: "Cortex",
       rows: [
-        { label: "why I built it", value: "I kept running into the same wall with document extraction — flat extraction works fine until you hit a document where understanding one field depends on reading three other sections. Most pipelines just ignore that and get it wrong." },
-        { label: "how it works", value: "GraphRAG builds a context graph over the document — entities, relationships, cross-references. A cheap baseline model handles the straightforward fields. When it hits something ambiguous or cross-referenced, a frontier model takes over. The result is accurate extraction without spending frontier tokens on every field." },
-        { label: "the feedback loop", value: "Confidence scoring on every extraction. Low-confidence outputs get flagged for human review, and that feedback feeds back into improving the routing thresholds." },
+        { label: "why I built it", value: "Flat extraction falls apart when a field depends on context from three other sections. Most pipelines ignore that and get it wrong. I wanted something that actually models how the document is structured." },
+        { label: "how it works", value: "GraphRAG builds a context graph over the document — entities, relationships, cross-references across sections. A cost-optimised baseline model (langextract) handles routine fields. When it hits ambiguous or cross-referenced entities, LangGraph routes to a frontier model for disambiguation. Result: accurate extraction without spending frontier tokens on every field." },
+        { label: "cost optimisation", value: "Token routing achieves 60%+ cost reduction per document compared to running everything through a frontier model — without sacrificing accuracy on the hard cases." },
+        { label: "observability", value: "HITL confidence scoring on every extraction. Low-confidence outputs surface for human review, and that feedback tightens the routing thresholds over time." },
         { label: "stack", value: "Multi-Agent · GraphRAG · LangGraph · Python" },
         { label: "status", value: "Open source, actively being built." },
       ],
@@ -97,9 +99,10 @@ const repos: Array<{
     detail: {
       title: "EngramDB",
       rows: [
-        { label: "why I built it", value: "I was testing RAG on legal contracts and hitting a pattern — questions that required following a cross-reference would fail every time. Vector search would find something semantically close, but that's not the same as finding what the document is actually referring to." },
-        { label: "how it works", value: "Two stages. First, vector search narrows to candidates. Then, graph traversal takes over — following the document's own section hierarchy, defined term links, and cross-references to pull in the full context. The graph is built from the document structure itself, not imposed on top." },
-        { label: "did it work", value: "Tested on 35 real contracts, 183 questions. Cross-reference queries went from missing most of the time to getting them right most of the time. The overall recall improvement was large enough that I stopped second-guessing the approach." },
+        { label: "why I built it", value: "Testing RAG on legal contracts kept hitting the same failure — cross-reference questions would fail because vector search finds semantically similar text, not structurally referenced text. Those aren't the same thing." },
+        { label: "how it works", value: "Two-stage hybrid retrieval. Vector search (FAISS) narrows the candidate set first. Then graph traversal takes over — following the document's own section hierarchy, defined term links, and explicit cross-references to pull in the complete context the answer depends on. The graph is derived from the document structure itself." },
+        { label: "storage layer", value: "DuckDB for zero-dependency local operation. Keeps the whole retrieval pipeline in-process without needing a separate vector database or graph server." },
+        { label: "benchmarks", value: "92.8% recall (hybrid) vs 68.2% (vector-only) on 35 CUAD contracts. +34 percentage points on cross-reference queries specifically. Benchmarked across 183 multi-hop questions." },
         { label: "stack", value: "Python · DuckDB · GraphRAG · Vector Search" },
         { label: "status", value: "Open source." },
       ],
@@ -119,11 +122,12 @@ const repos: Array<{
     detail: {
       title: "Frameforge",
       rows: [
-        { label: "why I built it", value: "When I'm designing a UI with an agent the feedback loop is slow — I describe what I want, the agent writes code, I run it, see it doesn't look right, describe the change. I wanted to short-circuit that by letting the agent just render a rough mockup before we commit to code." },
-        { label: "how it works", value: "One MCP tool: generate_ui_mockup. You or the agent describes a layout, it hits Gemini's image API and returns a PNG. The agent can reference it, you can look at it. Quick visual alignment before writing a line of code." },
-        { label: "to use it", value: "Published on npm. One config line to add to Claude Code, runs as a stdio server. Nothing to manage." },
+        { label: "why I built it", value: "The UI design loop with an AI agent is slow — describe what you want, agent writes code, you run it, realise it looks wrong, describe the change. I wanted to short-circuit that by letting the agent show a rough mockup before anyone writes a line of code." },
+        { label: "how it works", value: "Exposes a single MCP tool — generate_ui_mockup. The agent (or you) describes a layout in natural language, Frameforge calls Gemini's image generation API, and returns a PNG the agent can reference in context. Visual alignment before implementation." },
+        { label: "protocol", value: "Runs as a stdio MCP server — the standard transport for Claude Code tool integrations. No separate process to manage, no network setup." },
+        { label: "to install", value: "Published on npm. One config line in your Claude Code MCP settings and it's available as a native tool." },
         { label: "stack", value: "TypeScript · MCP Protocol · Gemini Image API · npm" },
-        { label: "status", value: "Published, open source." },
+        { label: "status", value: "Published on npm, open source." },
       ],
       link: "https://github.com/pyalwin/frameforge",
     },
@@ -141,7 +145,8 @@ export default function OpenSource() {
             <p className="mb-2 text-sm text-green">open_source.sh</p>
             <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Open Source</h1>
             <p className="max-w-2xl leading-7 text-subtext1">
-              Public repos and side projects I ship in the open. Source on GitHub.
+              Public repos and side projects I ship in the open. Source on GitHub.{" "}
+              <span className="text-green">Click <span className="font-bold">explain</span> on any card to dig in.</span>
             </p>
           </div>
 
@@ -228,7 +233,7 @@ export default function OpenSource() {
                     <button
                       type="button"
                       onClick={() => setSelected(repo.detail)}
-                      className="ml-auto flex items-center gap-1.5 rounded-md border border-line bg-panel px-3 py-1 text-xs text-subtext0 transition hover:border-green hover:text-green"
+                      className="ml-auto flex items-center gap-1.5 rounded-md border border-green/40 bg-green/5 px-3 py-1 text-xs text-green transition hover:border-green hover:bg-green/10"
                     >
                       <Sparkles size={11} />
                       explain

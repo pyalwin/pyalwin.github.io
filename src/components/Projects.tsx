@@ -32,11 +32,12 @@ const projects: Array<{
     detail: {
       title: "AgreedPro",
       rows: [
-        { label: "why I built it", value: "Every AI contract tool I tried had the same problem — it would confidently cite a clause that either didn't exist or meant something completely different in context. For legal work, that's not a UX issue, it's a liability issue." },
-        { label: "how it works", value: "I inject a Paragraph ID into every chunk before indexing. When the model answers, it has to cite the ID. A rule-based layer maps that ID back to the actual source location — so every answer is verifiable against the real document." },
-        { label: "the hard part", value: "Getting the chunking right so paragraph boundaries don't split mid-clause, and making the re-ranking actually surface the right precedent clauses rather than just the most semantically similar ones." },
-        { label: "where it is", value: "Multi-tenant, RBAC, audit logging, per-client compliance playbooks. In conversations with a few legal teams about pilots." },
+        { label: "why I built it", value: "Every AI contract tool I tried would confidently cite a clause that either didn't exist or meant something different in context. For legal work, that's a liability issue, not a UX issue." },
+        { label: "the core mechanism", value: "Paragraph ID injection — every chunk gets a deterministic ID before indexing, and the model is required to cite it in its answer. A rule-based mapping layer traces that ID back to the exact source location in the document. No hallucinated references, because the reference is structurally enforced." },
+        { label: "retrieval", value: "FAISS vector search for candidate retrieval, structured re-ranking to surface precedent clauses over just semantically similar ones, and query expansion to handle how lawyers ask questions differently to how contracts are written." },
+        { label: "architecture", value: "Multi-tenant with RBAC (admin / analyst / viewer roles), full audit logging, and configurable compliance playbooks per client so different teams can encode their own review criteria." },
         { label: "stack", value: "Python · LangChain · FAISS · RAG" },
+        { label: "status", value: "Active development — in conversations with legal teams about early pilots." },
       ],
     },
   },
@@ -51,9 +52,9 @@ const projects: Array<{
     detail: {
       title: "Ottimate Knowledge Bot",
       rows: [
-        { label: "why I built it", value: "Every team has this problem — the answer exists somewhere, but nobody knows which tab it's in. New engineers especially burn hours on questions that a senior would answer in 30 seconds. I wanted to make that 30-second answer available at any time." },
-        { label: "how it works", value: "Multi-agent setup where different agents handle different sources — one for Notion, one for JIRA, one that can read the codebase, one for Clickhouse. They each search their domain and a coordinator synthesises the answer with citations so you know where to go for more." },
-        { label: "what I learned", value: "The hard part isn't the retrieval — it's deciding what's authoritative when Notion says one thing and the code says another. We ended up building a simple recency + source priority model." },
+        { label: "why I built it", value: "The answer to 'where is that documented?' was always 'somewhere in Notion, or maybe JIRA, or ask someone.' New engineers burned hours on questions a senior would answer in 30 seconds. I wanted that 30-second answer available at any hour." },
+        { label: "how it works", value: "Multi-agent system built on Claude Code infrastructure. Separate agents handle each source — Notion, JIRA, codebase, and Clickhouse analytics. A coordinator agent synthesises the results and every answer includes source citations so you can verify and dig deeper." },
+        { label: "the tricky part", value: "Deciding what's authoritative when sources conflict — Notion might say one thing, the code does another. We built a recency + source-priority model to handle that, with the codebase winning for anything implementation-related." },
         { label: "stack", value: "Claude API · Slack SDK · Python · Multi-Agent · Pinecone" },
         { label: "status", value: "Running in production at Ottimate." },
       ],
@@ -70,9 +71,9 @@ const projects: Array<{
     detail: {
       title: "Agentic Coding Bot",
       rows: [
-        { label: "why I built it", value: "A certain class of support tickets always followed the same pattern — customer reports odd behaviour, engineer reads the ticket, reads the code, figures out a one-line fix, opens a PR. I got annoyed enough to automate it." },
-        { label: "how it works", value: "The agent reads the ticket, finds the relevant code, diagnoses the root cause, writes a fix, and opens a PR with a proper description. Each run is containerised so it can't stomp on anything. MCP gives it access to internal tools without me hardcoding everything." },
-        { label: "what surprised me", value: "It handles more cases than I expected. The agent is better at not over-engineering fixes than some engineers — it makes the smallest change that solves the problem." },
+        { label: "why I built it", value: "A class of support tickets always followed the same pattern — customer reports odd behaviour, engineer reads the ticket, reads the code, figures out a one-line fix, opens a PR. I got annoyed enough to automate it." },
+        { label: "how it works", value: "Claude Code agent reads the incoming ticket, navigates the relevant code, diagnoses the root cause, writes a targeted fix, and opens a PR with a proper description. Each run is containerised via Docker so it can't affect anything outside its scope. MCP integrations give it access to internal tools — no hardcoding." },
+        { label: "what surprised me", value: "It makes smaller fixes than most engineers would. No scope creep, no refactoring things that weren't broken. Just the minimum change that solves the problem — which is exactly what you want in a support fix." },
         { label: "recognition", value: "Won Ottimate's internal innovation award." },
         { label: "stack", value: "Claude SDK · MCP · Docker · GitHub API" },
       ],
@@ -89,9 +90,9 @@ const projects: Array<{
     detail: {
       title: "EIA Review Tool",
       rows: [
-        { label: "why I built it", value: "Someone showed me what manual EIA review actually looks like — a consultant with a highlighter going through a 900-page document, section by section, for weeks. There's a lot of that document that's boilerplate and a small part that actually matters. I wanted to build something that knows the difference." },
-        { label: "how it works", value: "Each section gets a deterministic ID so nothing gets lost or mis-attributed. The document hierarchy is preserved through structured ingestion. Then token routing kicks in — simpler sections go to a cheaper model, sections flagged as regulatory-critical go to a frontier model. You get accuracy where it matters without burning money on boilerplate." },
-        { label: "the tricky bit", value: "EIA sections reference each other constantly — an impact assessment in section 4 will reference a baseline from section 2 and mitigation measures from an appendix. Making that cross-referencing work reliably is the main thing I'm solving right now." },
+        { label: "why I built it", value: "Someone showed me what manual EIA review looks like — a consultant with a highlighter going through 900 pages, section by section, for weeks. Most of it is boilerplate. A small part is high-stakes. I wanted to build something that knows the difference." },
+        { label: "how it works", value: "Deterministic section ID mapping — every extracted fact references a specific location so nothing gets mis-attributed. Structured markdown ingestion preserves the document hierarchy rather than flattening it. Then token routing: routine boilerplate sections go to a cost-optimised model, sections flagged as regulatory-critical go to a frontier model." },
+        { label: "the hard part", value: "EIA sections reference each other constantly — an impact in section 4 depends on a baseline from section 2 and mitigation measures buried in an appendix. Cross-reference resolution across that span is what I'm focused on now." },
         { label: "stack", value: "Python · Claude API · Token Routing · RAG" },
         { label: "status", value: "In development." },
       ],
@@ -118,7 +119,8 @@ export default function Projects() {
             <p className="mb-2 text-sm text-sky">selected_projects.py</p>
             <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Selected Projects</h1>
             <p className="max-w-2xl leading-7 text-subtext1">
-              Applied work across document intelligence, developer tooling, automation, and product-minded engineering.
+              Applied work across document intelligence, developer tooling, automation, and product-minded engineering.{" "}
+              <span className="text-sky">Click <span className="font-bold">explain</span> on any card to dig in.</span>
             </p>
           </div>
 
@@ -209,7 +211,7 @@ export default function Projects() {
                     <button
                       type="button"
                       onClick={() => setSelected(project.detail)}
-                      className="ml-auto flex items-center gap-1.5 rounded-md border border-line bg-panel px-3 py-1 text-xs text-subtext0 transition hover:border-sky hover:text-sky"
+                      className="ml-auto flex items-center gap-1.5 rounded-md border border-sky/40 bg-sky/5 px-3 py-1 text-xs text-sky transition hover:border-sky hover:bg-sky/10"
                     >
                       <Sparkles size={11} />
                       explain

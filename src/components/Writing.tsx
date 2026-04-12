@@ -19,7 +19,7 @@ const articles: Array<{
     title: "Beyond RAG: Building Graph-Aware Retrieval for Contract Reasoning",
     platform: "dev.to",
     date: "Mar 2026",
-    url: "https://dev.to/pyalwin",
+    url: "https://dev.to/pyalwin/beyond-rag-building-graph-aware-retrieval-for-contract-reasoning-3o05",
     description:
       "EngramDB architecture, two-stage hybrid retrieval combining vector search with graph traversal over document structure, and CUAD benchmark results — 92.8% vs 68.2% recall.",
     tags: ["RAG", "GraphRAG", "Retrieval", "Benchmarks"],
@@ -27,19 +27,20 @@ const articles: Array<{
     detail: {
       title: "Beyond RAG: Graph-Aware Retrieval",
       rows: [
-        { label: "what made me write it", value: "I kept hitting the same failure mode — RAG would find something semantically similar to the question but miss the actual answer because it lived in a cross-referenced section. I wanted to write down what I figured out about why that happens and how to fix it." },
-        { label: "the core argument", value: "Documents aren't bags of text. They have structure — headings, defined terms, clauses that reference other clauses. If your retrieval layer ignores that structure, it's going to miss the answers that depend on it. Vector search alone can't follow a cross-reference." },
-        { label: "what I built to test it", value: "EngramDB — a retrieval engine that combines vector search with graph traversal over document structure. Tested it on real contracts. The improvement on cross-reference questions was big enough that I wrote the piece to explain why." },
+        { label: "what made me write it", value: "I kept hitting the same failure mode — RAG would find something semantically similar but miss the actual answer because it lived in a cross-referenced section. I wanted to write down why that happens and what actually fixes it." },
+        { label: "the core argument", value: "Documents aren't bags of text. They have structure — headings, defined terms, clauses that reference other clauses. If your retrieval layer ignores that structure, it misses the answers that depend on following it. Vector search alone can't do that." },
+        { label: "what I built", value: "EngramDB — a retrieval engine that runs vector search first, then uses graph traversal over document structure (section hierarchy, defined terms, cross-references) to resolve full context. Tested on 35 CUAD contracts, 183 multi-hop questions." },
+        { label: "the numbers", value: "92.8% recall with hybrid retrieval vs 68.2% with vector-only. +34 percentage points on cross-reference queries specifically — the exact failure mode I was trying to fix." },
         { label: "published", value: "dev.to · Mar 2026" },
       ],
-      link: "https://dev.to/pyalwin",
+      link: "https://dev.to/pyalwin/beyond-rag-building-graph-aware-retrieval-for-contract-reasoning-3o05",
     },
   },
   {
     title: "Stop Chatting with Claude Code. Start Building on It.",
     platform: "Medium",
     date: "Apr 2026",
-    url: "https://medium.com/@arun_venkat",
+    url: "https://medium.com/@arun_venkat/stop-chatting-with-claude-code-start-building-on-it-8b9a8e5c5732",
     description:
       "Claude Code as an orchestration engine, not a chat interface. Multi-agent pipeline patterns, subprocess composition, and why the CLI is actually the infrastructure.",
     tags: ["Claude Code", "Agents", "Engineering"],
@@ -47,19 +48,19 @@ const articles: Array<{
     detail: {
       title: "Stop Chatting with Claude Code",
       rows: [
-        { label: "what made me write it", value: "I kept seeing people use Claude Code the way they'd use a chat window — type a question, read the answer, type the next question. That's fine, but it misses what makes it actually powerful." },
-        { label: "the point", value: "Claude Code is a runtime, not a chat interface. You can spawn it as a subprocess, pipe structured output to other tools, build pipelines where different agents handle different parts of a task. The thing people are chatting with is actually programmable infrastructure." },
-        { label: "what I wanted people to take away", value: "If you're treating it like a chatbot, you're leaving most of it on the table. Think of it more like a smart subprocess you can compose with other tools." },
+        { label: "what made me write it", value: "I spent a year using Claude Code mostly as a chat window. Then a project forced me to use it differently — spawning it as a subprocess, piping output to other tools — and I realised I'd been leaving most of it on the table." },
+        { label: "the argument", value: "Claude Code is a programmable runtime, not a chatbot. You can spawn sub-agents with scoped permissions, compose their output with other processes, and build multi-step pipelines where Claude handles one stage of many. The CLI is the API." },
+        { label: "what it covers", value: "Concrete patterns: spawning Claude Code as a subprocess with --print for structured output, building pipelines where each agent has a single task, session persistence across pipeline stages, and how to think about tool access as a design decision rather than a config option." },
         { label: "published", value: "Medium · Apr 2026" },
       ],
-      link: "https://medium.com/@arun_venkat",
+      link: "https://medium.com/@arun_venkat/stop-chatting-with-claude-code-start-building-on-it-8b9a8e5c5732",
     },
   },
   {
     title: "Claude Code CLI — The Interface That's Actually the Infrastructure",
     platform: "Medium",
     date: "Apr 2026",
-    url: "https://medium.com/@arun_venkat",
+    url: "https://medium.com/@arun_venkat/build-on-the-cli-why-the-simplest-interface-is-the-most-powerful-be8753ad9a43",
     description:
       "The CLI as composable infrastructure, scoped permissions as design decisions, and how the tool boundary is the architectural boundary.",
     tags: ["Claude Code", "CLI", "Architecture"],
@@ -67,19 +68,19 @@ const articles: Array<{
     detail: {
       title: "Claude Code CLI as Infrastructure",
       rows: [
-        { label: "what made me write it", value: "I was building a multi-agent pipeline and realised I was making architectural decisions through CLI flags — which tools each agent could access, what it could write, what was off limits. That's not configuration, that's system design." },
-        { label: "the argument", value: "When you decide what tools Claude Code can use, you're defining a trust boundary. The CLI isn't just a way to run the tool — it's where you express what the tool is allowed to do. That's an infrastructure decision." },
-        { label: "why it matters", value: "If you think about it this way, you stop worrying about Claude Code 'going off script' and start designing agents that can only do what they should do. The CLI is how you express that." },
+        { label: "what made me write it", value: "While building a multi-agent pipeline I realised I was making architectural decisions through CLI flags — which tools each agent could access, what files it could write, what was completely off limits. That's not configuration. That's system design." },
+        { label: "the argument", value: "The CLI is the trust boundary. When you decide what tools Claude Code can access for a given task, you're defining what the agent is allowed to do — which is an infrastructure decision, not a preference. The tool boundary is the architectural boundary." },
+        { label: "practical implications", value: "Different agents in a pipeline can have entirely different tool access. An agent that reviews code doesn't need write access. An agent writing to disk doesn't need network access. This isn't limiting — it's how you build agents you can actually trust to run." },
         { label: "published", value: "Medium · Apr 2026" },
       ],
-      link: "https://medium.com/@arun_venkat",
+      link: "https://medium.com/@arun_venkat/build-on-the-cli-why-the-simplest-interface-is-the-most-powerful-be8753ad9a43",
     },
   },
   {
     title: "CLAUDE.md — The File Claude Reads Before You Speak",
     platform: "Medium",
     date: "Apr 2026",
-    url: "https://medium.com/@arun_venkat",
+    url: "https://medium.com/@arun_venkat/claude-md-the-file-claude-reads-before-you-speak-1bbea5ccb59a",
     description:
       "Behavioral instructions, agent configuration through markdown, and how CLAUDE.md is effectively the system prompt you control as an engineer.",
     tags: ["Claude Code", "Agent Config", "Prompting"],
@@ -87,19 +88,20 @@ const articles: Array<{
     detail: {
       title: "CLAUDE.md — Before You Speak",
       rows: [
-        { label: "what made me write it", value: "I watched someone get frustrated because Claude kept doing something they didn't want. They'd correct it, it would do it again next session. The fix was in CLAUDE.md and they didn't know that file existed." },
-        { label: "the point", value: "CLAUDE.md is the file Claude reads before it reads anything you type. Whatever you put in there shapes how it interprets every instruction that follows. It's not a settings file — it's where you engineer the agent's default behaviour." },
-        { label: "what I cover in the piece", value: "How to layer CLAUDE.md files across global, project, and directory scope. Using it to encode domain context so agents start informed instead of blank. Why the stuff you'd tell a new colleague on day one belongs in there." },
+        { label: "what made me write it", value: "I watched someone get frustrated because Claude kept doing something they didn't want. They'd correct it, it would do it again next session. The fix was a two-line addition to CLAUDE.md — a file they didn't know existed." },
+        { label: "the point", value: "CLAUDE.md is read before every session, before anything you type. It's not a settings file — it's where you engineer the agent's default behaviour. Whatever you put in there shapes how Claude interprets every instruction that follows." },
+        { label: "how it layers", value: "Global CLAUDE.md for preferences that apply everywhere. Project-level for codebase context and conventions. Directory-level for specific subsystems. The most specific file wins, so you can override globally without touching per-project config." },
+        { label: "what belongs in it", value: "Things you'd tell a new team member on day one — how the codebase is structured, what conventions matter, what to never do. Encoding that into CLAUDE.md means every session starts informed instead of blank." },
         { label: "published", value: "Medium · Apr 2026" },
       ],
-      link: "https://medium.com/@arun_venkat",
+      link: "https://medium.com/@arun_venkat/claude-md-the-file-claude-reads-before-you-speak-1bbea5ccb59a",
     },
   },
   {
     title: "Beyond Simple Prompts: Architecting an AI Agent",
     platform: "dev.to",
     date: "Dec 2025",
-    url: "https://dev.to/pyalwin",
+    url: "https://dev.to/pyalwin/beyond-simple-prompts-architecting-an-ai-agent-1i8c",
     description:
       "AgreedPro contract review agent deep-dive — paragraph anchoring, token-based diffing for Word tracked changes, and why determinism matters more than cleverness in production AI.",
     tags: ["Agents", "RAG", "Production AI"],
@@ -108,11 +110,13 @@ const articles: Array<{
       title: "Architecting an AI Agent",
       rows: [
         { label: "what made me write it", value: "I'd shipped AgreedPro to a few early users and the feedback wasn't about the quality of the answers — it was about trust. They wanted to know how it got there. That pushed me to think harder about what makes an AI agent something people will actually rely on." },
-        { label: "the main thing I was trying to say", value: "Getting an agent to produce good outputs is the easier half. The harder half is building something so that when it's wrong, you know it's wrong. That requires determinism — tracing every output back to a source, not hoping the model got it right." },
-        { label: "what I cover", value: "Paragraph anchoring in AgreedPro — how injecting source IDs into the context makes every answer verifiable. Token-based diffing to track Word document changes without losing structure. Why I'd build explainability first on any future project, not add it later." },
+        { label: "the main thing I was trying to say", value: "Getting an agent to produce good outputs is the easier half. The harder half is building something so that when it's wrong, you know it's wrong. That requires determinism — tracing every output back to a source, not hoping the model got it right. A well-prompted model that hallucinates confidently is worse than a simpler system with verifiable outputs." },
+        { label: "paragraph anchoring", value: "Every chunk in AgreedPro gets a deterministic source ID injected before it hits the vector index. The model is required to cite that ID in its answer. A rule-based mapping layer traces the ID back to the exact paragraph in the original document. There's no separate 'hallucination detection' step — the citation is structurally enforced, so it either exists or it doesn't." },
+        { label: "token-based Word diffing", value: "Legal review happens on Word documents with tracked changes. Most approaches flatten .docx to text and lose the change history. I built a token-level differ that preserves insertions, deletions, and move operations from the XML layer — so the agent sees 'proposed clause 4.2 replaces accepted clause 4.1' rather than just the final text." },
+        { label: "the lesson I'd carry forward", value: "I'd build explainability first on the next project, not bolt it on after. Once users expect to see a source, you can't take that away. And building for it from day one changes how you architect retrieval, chunking, and context assembly." },
         { label: "published", value: "dev.to · Dec 2025" },
       ],
-      link: "https://dev.to/pyalwin",
+      link: "https://dev.to/pyalwin/beyond-simple-prompts-architecting-an-ai-agent-1i8c",
     },
   },
 ];
@@ -133,7 +137,8 @@ export default function Writing() {
             <p className="mb-2 text-sm text-peach">writing.md</p>
             <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Writing</h1>
             <p className="max-w-2xl leading-7 text-subtext1">
-              Articles on building production AI systems — RAG pipelines, agents, Claude Code, and the engineering decisions behind them.
+              Articles on building production AI systems — RAG pipelines, agents, Claude Code, and the engineering decisions behind them.{" "}
+              <span className="text-peach">Click <span className="font-bold">explain</span> on any article to see what it's actually about.</span>
             </p>
           </div>
           <div className="flex flex-col gap-2">
@@ -193,7 +198,7 @@ export default function Writing() {
                       <button
                         type="button"
                         onClick={() => setSelected(article.detail)}
-                        className="ml-auto flex items-center gap-1.5 rounded-md border border-line bg-panel px-3 py-1 text-xs text-subtext0 transition hover:border-peach hover:text-peach"
+                        className="ml-auto flex items-center gap-1.5 rounded-md border border-peach/40 bg-peach/5 px-3 py-1 text-xs text-peach transition hover:border-peach hover:bg-peach/10"
                       >
                         <Sparkles size={11} />
                         explain
