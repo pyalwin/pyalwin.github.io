@@ -1,91 +1,121 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, MapPin, Phone, ArrowUpRight } from "lucide-react";
+import Image from "next/image";
+import { ArrowUpRight, Github, Linkedin, Mail, MapPin, Send } from "lucide-react";
+
+const links = [
+  {
+    label: "Email",
+    value: "arun.tgode@gmail.com",
+    href: "mailto:arun.tgode@gmail.com",
+    icon: <Mail size={20} />,
+  },
+  {
+    label: "LinkedIn",
+    value: "in/arun-venkataramanan",
+    href: "https://linkedin.com/in/arun-venkataramanan",
+    icon: <Linkedin size={20} />,
+  },
+  {
+    label: "GitHub",
+    value: "github.com/pyalwin",
+    href: "https://github.com/pyalwin",
+    icon: <Github size={20} />,
+  },
+];
 
 export default function Contact() {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.querySelector("[data-main-scroll]")?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <footer id="contact" className="py-24 px-6 bg-background border-t border-surface1 relative overflow-hidden">
-      {/* Glow Effect */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-mauve/50 to-transparent" />
-      
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
-        <div>
-          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Let&apos;s <span className="text-mauve">Connect</span></h2>
-          <p className="text-subtext1 mb-10 leading-relaxed text-lg">
-            I&apos;m always open to discussing enterprise architecture, generative AI, or potential collaborations.
+    <footer id="contact" className="min-h-full bg-background px-4 py-6 sm:px-6 sm:py-8">
+      <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[1fr_0.85fr]">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-lg border border-line bg-panel p-5 sm:p-7"
+        >
+          <p className="mb-2 text-sm text-sky">contact.sh</p>
+          <h1 className="mb-5 text-3xl font-bold sm:text-4xl">Let&apos;s Connect</h1>
+          <p className="mb-8 max-w-2xl text-lg leading-8 text-subtext1">
+            Open to senior engineering conversations around product engineering, platform work, automation, applied AI, and technical delivery.
           </p>
 
-          <div className="space-y-6">
-            <a href="mailto:arun.tgode@gmail.com" className="flex items-center gap-4 text-text hover:text-mauve transition-colors group">
-              <div className="p-3 bg-surface0 rounded-lg group-hover:bg-mauve/10 transition-colors">
-                <Mail size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-subtext0 uppercase tracking-widest">Email</p>
-                <p className="text-lg">arun.tgode@gmail.com</p>
-              </div>
-              <ArrowUpRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
-            </a>
-
-            <a href="https://linkedin.com/in/arun-venkataramanan" target="_blank" className="flex items-center gap-4 text-text hover:text-mauve transition-colors group">
-              <div className="p-3 bg-surface0 rounded-lg group-hover:bg-mauve/10 transition-colors">
-                <Linkedin size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-subtext0 uppercase tracking-widest">LinkedIn</p>
-                <p className="text-lg">in/arun-venkataramanan</p>
-              </div>
-              <ArrowUpRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
-            </a>
-
-            <a href="https://github.com/pyalwin" target="_blank" className="flex items-center gap-4 text-text hover:text-mauve transition-colors group">
-              <div className="p-3 bg-surface0 rounded-lg group-hover:bg-mauve/10 transition-colors">
-                <Github size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-subtext0 uppercase tracking-widest">GitHub</p>
-                <p className="text-lg">github.com/pyalwin</p>
-              </div>
-              <ArrowUpRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
-            </a>
+          <div className="space-y-3">
+            {links.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target={link.href.startsWith("http") ? "_blank" : undefined}
+                rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+                className="group flex items-center gap-4 rounded-lg border border-line bg-surface0 p-4 text-text transition hover:border-sky hover:bg-surface1"
+              >
+                <span className="rounded-md border border-line bg-panel p-3 text-sky transition group-hover:border-sky">{link.icon}</span>
+                <span className="min-w-0">
+                  <span className="block text-xs text-subtext0">{link.label}</span>
+                  <span className="block truncate text-base font-bold">{link.value}</span>
+                </span>
+                <ArrowUpRight size={18} className="ml-auto text-subtext0 transition group-hover:text-sky" />
+              </a>
+            ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="flex flex-col justify-between">
-          <div className="bg-surface0 p-8 rounded-3xl border border-surface1">
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <MapPin size={20} className="text-peach" />
-              Location
-            </h3>
-            <p className="text-subtext1 text-lg mb-8">
-              Based in <span className="text-text font-medium text-xl">Bangalore, India</span>
-              <br />
-              <span className="text-sm italic">Open to remote & international relocation roles.</span>
-            </p>
-            
-            <div className="flex items-center gap-4 text-subtext1">
-              <Phone size={18} className="text-peach" />
-              <span>+91 8454 866083</span>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.08 }}
+          className="grid gap-5"
+        >
+          <div className="relative min-h-[270px] overflow-hidden rounded-lg border border-line bg-surface0">
+            <Image
+              src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=900&q=80"
+              alt="City skyline at dusk"
+              fill
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="absolute inset-0 h-full w-full object-cover opacity-60"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,17,16,0.18),rgba(15,17,16,0.88))]" />
+            <div className="relative flex h-full min-h-[270px] flex-col justify-end p-5">
+              <div className="mb-4 flex items-center gap-3 text-peach">
+                <MapPin size={22} />
+                <span className="font-bold">Bangalore, India</span>
+              </div>
+              <p className="max-w-md leading-7 text-subtext1">
+                Open to remote roles and international relocation conversations.
+              </p>
             </div>
           </div>
 
-          <div className="mt-16 flex items-center justify-between">
-            <p className="text-subtext0 text-sm italic font-mono">
-              &copy; {new Date().getFullYear()} Arun Venkataramanan. Built with Next.js & Framer Motion.
-            </p>
-            <button 
+          <div className="rounded-lg border border-line bg-panel p-5">
+            <div className="mb-5 flex items-center gap-3">
+              <Send size={20} className="text-green" />
+              <h2 className="text-xl font-bold">Fast path</h2>
+            </div>
+            <div className="space-y-3 text-subtext1">
+              <p className="text-sm leading-6 text-subtext0">
+                Best topics: product architecture, platform reliability, workflow automation, applied AI, and engineering leadership.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-4 text-sm text-subtext0">
+            <p>&copy; {new Date().getFullYear()} Arun Venkataramanan. Built with Next.js and Framer Motion.</p>
+            <button
+              type="button"
               onClick={scrollToTop}
-              className="p-4 bg-surface0 rounded-full border border-surface1 hover:border-mauve hover:text-mauve transition-all group"
+              className="shrink-0 rounded-md border border-line bg-surface0 p-3 text-subtext1 transition hover:border-sky hover:text-sky"
+              aria-label="Scroll to top"
             >
-              <ArrowUpRight size={24} className="-rotate-45 group-hover:rotate-0 transition-transform" />
+              <ArrowUpRight size={22} className="-rotate-45" />
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );

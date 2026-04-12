@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --background: #1e1e2e;
-  --foreground: #cdd6f4;
-  --surface0: #313244;
-  --surface1: #45475a;
-  --surface2: #585b70;
-  --overlay0: #6c7086;
-  --overlay1: #7f849c;
-  --overlay2: #9399b2;
-  --subtext0: #a6adc8;
-  --subtext1: #bac2de;
-  --text: #cdd6f4;
-  --blue: #89b4fa;
-  --mauve: #cba6f7;
-  --green: #a6e3a1;
-  --yellow: #f9e2af;
-  --sky: #89dceb;
-  --peach: #fab387;
-  --red: #f38ba8;
-  --pink: #f5c2e7;
-  --sapphire: #74c7ec;
-  --lavender: #b4befe;
+  --background: #0f1110;
+  --foreground: #eef4ed;
+  --surface0: #171a18;
+  --surface1: #222720;
+  --surface2: #343a31;
+  --overlay0: #626b5f;
+  --overlay1: #828b7c;
+  --overlay2: #a2ad9b;
+  --subtext0: #a2ad9b;
+  --subtext1: #c9d3c4;
+  --text: #eef4ed;
+  --blue: #6bb8ff;
+  --green: #8fd178;
+  --yellow: #e4c064;
+  --sky: #59d4c5;
+  --peach: #ef8f5a;
+  --red: #ff6f6f;
+  --pink: #e487b8;
+  --sapphire: #5aa9c8;
+  --line: #2a3028;
+  --panel: #121512;
 }
 
 @theme inline {
@@ -37,7 +37,6 @@
   --color-subtext1: var(--subtext1);
   --color-text: var(--text);
   --color-blue: var(--blue);
-  --color-mauve: var(--mauve);
   --color-green: var(--green);
   --color-yellow: var(--yellow);
   --color-sky: var(--sky);
@@ -45,11 +44,12 @@
   --color-red: var(--red);
   --color-pink: var(--pink);
   --color-sapphire: var(--sapphire);
-  --color-lavender: var(--lavender);
+  --color-line: var(--line);
+  --color-panel: var(--panel);
   
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-jetbrains-mono), monospace;
   --font-mono: var(--font-jetbrains-mono), monospace;
-  --font-heading: var(--font-space-grotesk), sans-serif;
+  --font-heading: var(--font-jetbrains-mono), monospace;
 }
 
 body {
@@ -59,8 +59,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button,
+a,
+input {
+  outline-color: var(--sky);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--sky);
+  outline-offset: 2px;
+}
+
 ::selection {
-  background-color: var(--lavender);
+  background-color: var(--sky);
   color: var(--background);
 }
 
@@ -79,4 +92,41 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--surface2);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes cursor-blink {
+  0%, 49.9% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: cursor-blink 1.1s step-end infinite;
+}
+
+@keyframes stream-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stream-line {
+  animation: stream-in 0.25s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

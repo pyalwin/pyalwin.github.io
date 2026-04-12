@@ -1,99 +1,109 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Briefcase, Calendar, MapPin } from "lucide-react";
+import { ArrowUpRight, Briefcase, Calendar, MapPin, ServerCog } from "lucide-react";
 
 const experience = [
   {
     company: "Ottimate",
     role: "Senior Software Engineer — Integrations Architect",
-    period: "May 2022 – Present",
+    period: "May 2022 - Present",
     location: "Bangalore, India",
-    description: "Enterprise AP automation — ERP integration infrastructure, customer-facing technical engagements, repeatable connector patterns.",
-    tech: ["QuickBooks", "Sage Intacct", "Microsoft Dynamics", "NetSuite"],
+    description: "Architecting multi-tenant integration infrastructure processing 70,000+ invoices/day across 50+ ERP connectors (QuickBooks, Sage Intacct, Dynamics 365, NetSuite, Xero). Built repeatable connector patterns that cut new ERP integration from weeks to days. Led customer-facing technical engagements — scoping, solution design, production debugging. Built an AI code reviewer in CI/CD via GitHub Actions, an autonomous Claude Code agent for support ticket handling and PR creation (internal innovation award), and a company-wide multi-agent Slack bot answering questions across Notion, JIRA, code, and Clickhouse analytics.",
+    tech: ["QuickBooks", "Sage Intacct", "Dynamics 365", "NetSuite", "Xero", "Python", "Claude API", "GitHub Actions"],
+    signal: "integrations architect",
   },
   {
     company: "Idealoom Technologies",
     role: "Founding Engineer & Engineering Lead",
-    period: "2016 – 2022",
+    period: "2016 - 2022",
     location: "Bangalore, India",
-    description: "Fintech SaaS platform — product architecture, API design, payment provider integrations, banking APIs, compliance systems.",
+    description: "Fintech SaaS platform, product architecture, API design, payment provider integrations, banking APIs, and compliance systems.",
     tech: ["Python", "API Design", "Payments", "SaaS Architecture"],
+    signal: "product architecture",
   },
   {
     company: "Tata Consultancy Services (TCS)",
     role: "Software Engineer",
-    period: "2013 – 2016",
+    period: "2013 - 2016",
     location: "Bangalore, India",
     description: "BFSI vertical, enterprise IT services, client-facing delivery.",
     tech: ["Enterprise IT", "BFSI", "Software Delivery"],
+    signal: "enterprise delivery",
   },
 ];
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-24 px-6 bg-surface0">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-16 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Professional <span className="text-blue">Journey</span></h2>
-          <div className="w-20 h-1.5 bg-blue rounded-full mb-6 mx-auto" />
-          <p className="text-subtext1 max-w-2xl mx-auto leading-relaxed">
-            12+ years of experience in enterprise infrastructure and fintech architecture.
-          </p>
+    <section id="experience" className="min-h-full bg-background px-4 py-6 sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-6 grid gap-4 rounded-lg border border-line bg-panel p-5 md:grid-cols-[1fr_260px]">
+          <div>
+            <p className="mb-2 text-sm text-sky">experience.json</p>
+            <h1 className="mb-4 text-3xl font-bold sm:text-4xl">Professional Journey</h1>
+            <p className="max-w-2xl leading-7 text-subtext1">
+              12+ years across product engineering, platform architecture, fintech systems, and applied automation.
+            </p>
+          </div>
+          <div className="rounded-lg border border-line bg-background/45 p-4">
+            <div className="mb-3 flex items-center gap-2 text-green">
+              <ServerCog size={18} />
+              <span className="font-bold">Current focus</span>
+            </div>
+            <p className="text-sm leading-6 text-subtext1">
+              Integration infrastructure at scale — 70k+ invoices/day, 50+ ERP connectors, and production GenAI systems shipping in enterprise environments.
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-12">
-          {experience.map((exp, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="relative pl-8 sm:pl-12 pb-12 last:pb-0"
+        <div className="space-y-4">
+          {experience.map((exp, index) => (
+            <motion.article
+              key={exp.company}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ x: 4 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ delay: index * 0.08, duration: 0.35 }}
+              className="group grid gap-5 rounded-lg border border-line bg-surface0 p-5 transition hover:border-sky/70 hover:bg-surface1 md:grid-cols-[190px_1fr]"
             >
-              {/* Timeline Line */}
-              {i !== experience.length - 1 && (
-                <div className="absolute left-[11px] sm:left-[15px] top-8 w-px h-full bg-gradient-to-b from-blue/50 to-transparent" />
-              )}
-              
-              {/* Timeline Dot */}
-              <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-background border-2 border-blue flex items-center justify-center z-10 shadow-[0_0_15px_rgba(137,180,250,0.3)]">
-                <div className="w-2 h-2 rounded-full bg-blue" />
+              <div className="border-b border-line pb-4 md:border-b-0 md:border-r md:pb-0 md:pr-5">
+                <div className="mb-3 flex items-center gap-2 text-sm text-green">
+                  <Calendar size={15} />
+                  {exp.period}
+                </div>
+                <p className="text-xs text-subtext0">{exp.signal}</p>
               </div>
 
-              <div className="bg-background/40 border border-surface1 p-6 sm:p-8 rounded-2xl hover:border-blue/30 transition-all group">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                  <h3 className="text-2xl font-bold group-hover:text-blue transition-colors">{exp.company}</h3>
-                  <div className="flex items-center gap-2 text-sm text-subtext1 bg-surface1 px-3 py-1 rounded-full whitespace-nowrap">
-                    <Calendar size={14} />
-                    {exp.period}
+              <div>
+                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold transition group-hover:text-sky">{exp.company}</h2>
+                    <div className="mt-2 flex items-center gap-2 text-sm text-peach">
+                      <Briefcase size={15} />
+                      <span>{exp.role}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-subtext0">
+                    <MapPin size={14} />
+                    {exp.location}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-peach mb-4 font-medium">
-                  <Briefcase size={16} />
-                  {exp.role}
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-subtext0 mb-6">
-                  <MapPin size={14} />
-                  {exp.location}
-                </div>
-
-                <p className="text-subtext1 mb-6 leading-relaxed">
-                  {exp.description}
-                </p>
+                <p className="mb-5 max-w-3xl leading-7 text-subtext1">{exp.description}</p>
 
                 <div className="flex flex-wrap gap-2">
-                  {exp.tech.map((tag, j) => (
-                    <span key={j} className="px-3 py-1 bg-surface1/50 text-subtext1 text-xs rounded-full border border-surface1 group-hover:border-blue/20 transition-all">
+                  {exp.tech.map((tag) => (
+                    <span key={tag} className="rounded-md border border-line bg-panel px-3 py-1 text-xs text-subtext1">
                       {tag}
                     </span>
                   ))}
+                  <span className="ml-auto hidden items-center gap-1 text-xs text-sky opacity-0 transition group-hover:opacity-100 sm:flex">
+                    inspect role <ArrowUpRight size={14} />
+                  </span>
                 </div>
               </div>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
       </div>

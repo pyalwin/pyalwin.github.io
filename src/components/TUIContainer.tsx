@@ -1,248 +1,349 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { Monitor, Cpu, Clock, Globe, HelpCircle, Briefcase, Code, Mail, Terminal as TerminalIcon, X, ChevronRight, FileText } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import {
+  BookOpen,
+  Briefcase,
+  Clock,
+  Code,
+  FileText,
+  Github,
+  HelpCircle,
+  Mail,
+  Terminal as TerminalIcon,
+  X,
+} from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import Hero from "./Hero";
 import Experience from "./Experience";
 import Projects from "./Projects";
+import OpenSource from "./OpenSource";
+import Writing from "./Writing";
 import Contact from "./Contact";
 import Terminal from "./Terminal";
 
-type Tab = "home" | "experience" | "projects" | "contact" | "help";
+type Tab = "home" | "experience" | "projects" | "opensource" | "writing" | "contact" | "help";
+
+const tabs: Array<{
+  id: Tab;
+  label: string;
+  file: string;
+  shortcut: string;
+  icon: React.ReactNode;
+  description: string;
+  color: string;
+}> = [
+  {
+    id: "home",
+    label: "Overview",
+    file: "home.md",
+    shortcut: "F1",
+    icon: <FileText size={16} />,
+    description: "profile, focus areas, console",
+    color: "text-sky",
+  },
+  {
+    id: "experience",
+    label: "Experience",
+    file: "experience.json",
+    shortcut: "F2",
+    icon: <Briefcase size={16} />,
+    description: "roles and systems shipped",
+    color: "text-green",
+  },
+  {
+    id: "projects",
+    label: "Projects",
+    file: "selected_projects.py",
+    shortcut: "F3",
+    icon: <Code size={16} />,
+    description: "selected technical builds",
+    color: "text-yellow",
+  },
+  {
+    id: "opensource",
+    label: "Open Source",
+    file: "open_source.sh",
+    shortcut: "F4",
+    icon: <Github size={16} />,
+    description: "public repos and OSS work",
+    color: "text-green",
+  },
+  {
+    id: "writing",
+    label: "Writing",
+    file: "writing.md",
+    shortcut: "F5",
+    icon: <BookOpen size={16} />,
+    description: "articles on AI and engineering",
+    color: "text-peach",
+  },
+  {
+    id: "contact",
+    label: "Contact",
+    file: "contact.sh",
+    shortcut: "F6",
+    icon: <Mail size={16} />,
+    description: "email, LinkedIn, GitHub",
+    color: "text-peach",
+  },
+  {
+    id: "help",
+    label: "Help",
+    file: "help.txt",
+    shortcut: "?",
+    icon: <HelpCircle size={16} />,
+    description: "shortcuts and controls",
+    color: "text-peach",
+  },
+];
 
 export default function TUIContainer() {
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState("--:--:--");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const activeMeta = tabs.find((tab) => tab.id === activeTab) ?? tabs[0];
 
-  const toggleTerminal = useCallback(() => setIsTerminalOpen(prev => !prev), []);
+  const toggleTerminal = useCallback(() => setIsTerminalOpen((prev) => !prev), []);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "F1") { e.preventDefault(); setActiveTab("help"); }
-      if (e.key === "F2") { e.preventDefault(); setActiveTab("experience"); }
-      if (e.key === "F3") { e.preventDefault(); setActiveTab("projects"); }
-      if (e.key === "F4") { e.preventDefault(); setActiveTab("contact"); }
-      if (e.key === "Escape") { e.preventDefault(); toggleTerminal(); }
+    const updateTime = () => setTime(new Date().toLocaleTimeString());
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTyping = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA";
+
+      if (event.key === "F1") {
+        event.preventDefault();
+        setActiveTab("home");
+      }
+      if (event.key === "F2") {
+        event.preventDefault();
+        setActiveTab("experience");
+      }
+      if (event.key === "F3") {
+        event.preventDefault();
+        setActiveTab("projects");
+      }
+      if (event.key === "F4") {
+        event.preventDefault();
+        setActiveTab("opensource");
+      }
+      if (event.key === "F5") {
+        event.preventDefault();
+        setActiveTab("writing");
+      }
+      if (event.key === "F6") {
+        event.preventDefault();
+        setActiveTab("contact");
+      }
+      if (event.key === "?" && !isTyping) {
+        event.preventDefault();
+        setActiveTab("help");
+      }
+      if (event.key === "/" && !isTyping) {
+        event.preventDefault();
+        setIsTerminalOpen(true);
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setIsTerminalOpen((open) => !open);
+      }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       clearInterval(timer);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [toggleTerminal]);
+  }, []);
+
+  useEffect(() => {
+    scrollContainerRef.current?.scrollTo({ top: 0 });
+  }, [activeTab]);
 
   const renderContent = () => {
     switch (activeTab) {
-      case "home": return <div className="p-4 sm:p-8"><Hero /></div>;
-      case "experience": return <Experience />;
-      case "projects": return <Projects />;
-      case "contact": return <Contact />;
-      case "help": return (
-        <div className="p-8 font-mono space-y-8 max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold text-mauve flex items-center gap-3">
-            <HelpCircle size={32} /> ARUN_OS_HELP
-          </h2>
-          <div className="bg-surface0 border-2 border-surface1 p-6 space-y-4">
-            <p className="text-subtext1 leading-relaxed">
-              Welcome to the advanced terminal interface for Arun Venkataramanan&apos;s portfolio. 
-              Navigate using the sidebar or use the system shortcuts below.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-              <HelpItem shortcut="F1" action="System Help" color="text-mauve" />
-              <HelpItem shortcut="F2" action="Experience.json" color="text-blue" />
-              <HelpItem shortcut="F3" action="AI_Projects.py" color="text-green" />
-              <HelpItem shortcut="F4" action="Contact.sh" color="text-peach" />
-              <HelpItem shortcut="ESC" action="Toggle Terminal" color="text-red" />
-            </div>
-          </div>
-          <div className="text-[10px] text-overlay0 font-mono italic">
-            v1.0.0-stable build: 2026-04-11
-          </div>
-        </div>
-      );
+      case "home":
+        return <Hero onOpenSection={setActiveTab} />;
+      case "experience":
+        return <Experience />;
+      case "projects":
+        return <Projects />;
+      case "opensource":
+        return <OpenSource />;
+      case "writing":
+        return <Writing />;
+      case "contact":
+        return <Contact />;
+      case "help":
+        return <HelpPanel />;
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-[#1e1e2e] text-[#cdd6f4] flex flex-col overflow-hidden font-mono selection:bg-[#b4befe] selection:text-[#1e1e2e]">
-      {/* Header Status Bar */}
-      <header className="h-8 bg-[#cba6f7] text-[#1e1e2e] flex items-center justify-between px-4 text-xs font-bold shrink-0 z-50 border-b border-[#313244]">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Monitor size={14} />
-            <span>ARUN_OS v1.0.0</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-2 opacity-80 border-l border-[#1e1e2e]/20 pl-4">
-            <Cpu size={14} />
-            <span>GEN-AI / INTEGRATIONS</span>
-          </div>
+    <div className="fixed inset-0 flex flex-col overflow-hidden bg-background text-text font-mono">
+      <header className="z-50 flex h-9 shrink-0 items-center gap-2 overflow-x-auto border-b border-line bg-panel px-2 text-[11px] text-subtext1 no-scrollbar sm:px-3">
+        <button
+          type="button"
+          onClick={() => setActiveTab("home")}
+          className="flex shrink-0 items-center gap-1.5 rounded-md border border-line bg-surface0 px-2 py-1 font-bold text-text transition hover:border-sky hover:text-sky"
+          aria-label="Open overview"
+        >
+          <TerminalIcon size={13} className="text-sky" />
+          <span>arun_os</span>
+        </button>
+
+        <div className="flex min-w-[150px] shrink-0 items-center gap-1.5 text-subtext0 sm:min-w-[210px]">
+          <span>~/arun/</span>
+          <span className={`truncate font-bold ${activeMeta.color}`}>{activeMeta.file}</span>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-2 opacity-80">
-            <Globe size={14} />
-            <span>IST (UTC+5:30)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock size={14} />
-            <span>{time.toLocaleTimeString()}</span>
+
+        <nav className="flex shrink-0 items-center gap-1" aria-label="Portfolio commands">
+          {tabs.map((tab) => (
+            <ShortcutKey
+              key={tab.id}
+              keyLabel={tab.shortcut}
+              label={tab.label}
+              active={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id)}
+            />
+          ))}
+        </nav>
+
+        <div className="ml-auto flex shrink-0 items-center gap-1.5">
+          <button
+            type="button"
+            onClick={toggleTerminal}
+            className={`flex items-center gap-1.5 rounded-md border px-2 py-1 transition ${
+              isTerminalOpen
+                ? "border-sky bg-sky text-background"
+                : "border-line bg-surface0 text-subtext1 hover:border-sky hover:text-sky"
+            }`}
+            aria-label="Toggle command console"
+          >
+            <span>/</span>
+            <span className="hidden sm:inline">{isTerminalOpen ? "console:open" : "console"}</span>
+          </button>
+          <div className="hidden items-center gap-1.5 rounded-md border border-line bg-surface0 px-2 py-1 text-text sm:flex">
+            <Clock size={12} className="text-green" />
+            <span>{time}</span>
           </div>
         </div>
       </header>
 
-      {/* Main Grid Layout */}
-      <div className="flex-1 flex overflow-hidden relative">
-        {/* Sidebar Navigation */}
-        <aside className="w-64 border-r border-[#313244] flex flex-col bg-[#1e1e2e] shrink-0 hidden md:flex">
-          <div className="p-4 border-b border-[#313244] text-[10px] text-[#a6adc8] uppercase tracking-[0.2em] font-bold bg-[#313244]/30">
-            File Browser
-          </div>
-          <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto scrollbar-thin scrollbar-thumb-[#45475a]">
-            <NavItem active={activeTab === "home"} icon={<FileText size={16} />} label="home.md" onClick={() => setActiveTab("home")} />
-            
-            <div className="mt-4 mb-2 px-3 flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-[#89b4fa]" />
-              <span className="text-[10px] text-[#7f849c] uppercase tracking-widest font-bold">Work</span>
-            </div>
-            <NavItem active={activeTab === "experience"} icon={<Briefcase size={16} />} label="experience.json" onClick={() => setActiveTab("experience")} />
-            
-            <div className="mt-4 mb-2 px-3 flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-[#a6e3a1]" />
-              <span className="text-[10px] text-[#7f849c] uppercase tracking-widest font-bold">Projects</span>
-            </div>
-            <NavItem active={activeTab === "projects"} icon={<Code size={16} />} label="ai_projects.py" onClick={() => setActiveTab("projects")} />
-            
-            <div className="mt-4 mb-2 px-3 flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-[#fab387]" />
-              <span className="text-[10px] text-[#7f849c] uppercase tracking-widest font-bold">System</span>
-            </div>
-            <NavItem active={activeTab === "contact"} icon={<Mail size={16} />} label="contact.sh" onClick={() => setActiveTab("contact")} />
-            <NavItem active={activeTab === "help"} icon={<HelpCircle size={16} />} label="help_man.txt" onClick={() => setActiveTab("help")} />
-          </nav>
-          <div className="p-4 bg-[#313244]/20 text-[10px] text-[#a6adc8] border-t border-[#313244] font-mono leading-relaxed">
-            <p className="flex justify-between"><span>CPU</span> <span className="text-[#a6e3a1]">8.4%</span></p>
-            <p className="flex justify-between"><span>MEM</span> <span className="text-[#89b4fa]">2.1 GB</span></p>
-            <p className="flex justify-between"><span>UP</span> <span className="text-[#cba6f7]">14d 2h</span></p>
-          </div>
-        </aside>
-
-        {/* Content Panel */}
-        <main className="flex-1 flex flex-col bg-[#1e1e2e] relative overflow-hidden">
-          {/* Panel Header/Tabs */}
-          <div className="h-9 bg-[#313244]/50 border-b border-[#313244] flex items-center px-4 shrink-0 gap-4">
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-[#7f849c]">~/arun/</span>
-              <span className="text-[#cba6f7] font-bold flex items-center gap-1.5">
-                {activeTab === 'home' ? 'home.md' : activeTab === 'experience' ? 'experience.json' : activeTab === 'projects' ? 'ai_projects.py' : activeTab === 'contact' ? 'contact.sh' : 'help_man.txt'}
-                <div className="w-1.5 h-1.5 bg-[#cba6f7] rounded-full animate-pulse" />
-              </span>
-            </div>
-            <div className="ml-auto hidden sm:flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full border border-[#f38ba8]/50" />
-              <div className="w-2 h-2 rounded-full border border-[#f9e2af]/50" />
-              <div className="w-2 h-2 rounded-full border border-[#a6e3a1]/50" />
-            </div>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto scroll-smooth scrollbar-thin scrollbar-thumb-[#45475a] relative">
+      <div className="relative flex min-h-0 flex-1 overflow-hidden">
+        <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-background">
+          <div ref={scrollContainerRef} data-main-scroll className="min-h-0 flex-1 overflow-y-auto scroll-smooth">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, scale: 0.995 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.005 }}
-                transition={{ duration: 0.15 }}
-                className="h-full"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18 }}
+                className="min-h-full"
               >
                 {renderContent()}
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Terminal / REPL Overlay */}
           <AnimatePresence>
             {isTerminalOpen && (
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
+                initial={{ y: 28, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                className="absolute inset-x-4 bottom-4 h-1/3 bg-[#11111b]/95 border border-[#cba6f7]/30 shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-40 flex flex-col rounded-lg backdrop-blur-xl"
+                exit={{ y: 28, opacity: 0 }}
+                className="absolute inset-x-3 bottom-3 z-40 h-[72vh] max-h-[520px] rounded-lg border border-sky/50 bg-background/95 p-2 shadow-[0_24px_80px_rgba(0,0,0,0.55)] backdrop-blur md:inset-x-5 md:h-[44vh]"
               >
-                <div className="h-8 flex items-center justify-between px-4 border-b border-[#313244] shrink-0 bg-[#313244]/20">
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-[#89dceb] tracking-widest uppercase">
-                    <TerminalIcon size={12} />
-                    <span>Debug Console (REPL)</span>
+                <div className="mb-2 flex items-center justify-between px-1 text-xs text-subtext1">
+                  <div className="flex items-center gap-2">
+                    <TerminalIcon size={14} className="text-sky" />
+                    <span>command console</span>
                   </div>
-                  <button onClick={() => setIsTerminalOpen(false)} className="text-[#a6adc8] hover:text-[#f38ba8] transition-colors p-1">
-                    <X size={14} />
+                  <button
+                    type="button"
+                    onClick={() => setIsTerminalOpen(false)}
+                    className="rounded-md p-1 text-subtext1 transition hover:bg-surface1 hover:text-red"
+                    aria-label="Close command console"
+                  >
+                    <X size={16} />
                   </button>
                 </div>
-                <div className="flex-1 p-4 overflow-y-auto custom-terminal-scrollbar">
-                  <Terminal />
-                </div>
+                <Terminal embedded title="quick-actions:~" />
               </motion.div>
             )}
           </AnimatePresence>
         </main>
       </div>
-
-      {/* Footer Shortcut Bar */}
-      <footer className="h-8 bg-[#313244] border-t border-[#45475a] flex items-center px-4 text-[10px] shrink-0 overflow-x-auto gap-4 sm:gap-8 no-scrollbar">
-        <div className="flex items-center gap-4 sm:gap-6 shrink-0">
-          <ShortcutKey keyLabel="F1" label="Help" onClick={() => setActiveTab("help")} />
-          <ShortcutKey keyLabel="F2" label="Experience" onClick={() => setActiveTab("experience")} />
-          <ShortcutKey keyLabel="F3" label="Projects" onClick={() => setActiveTab("projects")} />
-          <ShortcutKey keyLabel="F4" label="Contact" onClick={() => setActiveTab("contact")} />
-          <ShortcutKey keyLabel="ESC" label={isTerminalOpen ? "Term Off" : "Term On"} onClick={toggleTerminal} />
-        </div>
-        <div className="ml-auto flex items-center gap-4 text-[#7f849c] shrink-0">
-          <span className="flex items-center gap-1.5"><ChevronRight size={10} className="text-[#cba6f7]" /> ARUN_NODE_01</span>
-          <span className="hidden sm:inline border-l border-[#45475a] h-4" />
-          <span className="hidden sm:inline">UTF-8</span>
-          <span className="hidden sm:inline border-l border-[#45475a] h-4" />
-          <span className="hidden sm:inline text-[#cba6f7] font-bold">NEXT_APP</span>
-        </div>
-      </footer>
-
-      {/* TUI Scanline Overlay */}
-      <div className="pointer-events-none fixed inset-0 z-[100] opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
     </div>
   );
 }
 
-function NavItem({ active, icon, label, onClick }: { active: boolean; icon: React.ReactNode; label: string; onClick: () => void }) {
+function ShortcutKey({
+  keyLabel,
+  label,
+  active,
+  onClick,
+}: {
+  keyLabel: string;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-sm text-xs transition-all border-l-2 ${
-        active 
-          ? "bg-[#cba6f7]/10 text-[#cba6f7] border-[#cba6f7] font-bold" 
-          : "text-[#a6adc8] border-transparent hover:bg-[#313244]/50 hover:text-[#cba6f7]"
+      className={`flex shrink-0 items-center gap-1.5 rounded-md border px-2 py-1 transition ${
+        active
+          ? "border-sky bg-background text-sky"
+          : "border-transparent text-subtext1 hover:border-line hover:bg-surface0"
       }`}
     >
-      <span className={active ? "text-[#cba6f7]" : "text-[#7f849c]"}>{icon}</span>
-      <span className="flex-1 text-left">{label}</span>
-      {active && <div className="w-1 h-1 rounded-full bg-[#cba6f7]" />}
+      <span className="font-bold">{keyLabel}</span>
+      <span className="hidden sm:inline">{label}</span>
     </button>
   );
 }
 
-function ShortcutKey({ keyLabel, label, onClick }: { keyLabel: string; label: string; onClick: () => void }) {
+function HelpPanel() {
   return (
-    <button onClick={onClick} className="flex items-center gap-1.5 hover:bg-[#45475a] px-2 py-0.5 rounded transition-all group shrink-0">
-      <span className="text-[#89b4fa] font-bold group-hover:text-[#89dceb] transition-colors">{keyLabel}</span>
-      <span className="text-[#bac2de] group-hover:text-[#cdd6f4] transition-colors uppercase font-medium">{label}</span>
-    </button>
+    <section className="min-h-full bg-background px-4 py-6 sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-6 border border-line bg-panel p-5 rounded-lg">
+          <div className="mb-3 flex items-center gap-3">
+            <HelpCircle size={24} className="text-sky" />
+            <h1 className="text-3xl font-bold">Controls</h1>
+          </div>
+          <p className="max-w-2xl leading-7 text-subtext1">
+            Use the top command bar or keyboard shortcuts. The console accepts typed commands and clickable command chips.
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <HelpItem shortcut="F1" action="Open overview" />
+          <HelpItem shortcut="F2" action="Open experience" />
+          <HelpItem shortcut="F3" action="Open projects" />
+          <HelpItem shortcut="F4" action="Open source repos" />
+          <HelpItem shortcut="F5" action="Open writing" />
+          <HelpItem shortcut="F6" action="Open contact" />
+          <HelpItem shortcut="/" action="Open command console" />
+          <HelpItem shortcut="ESC" action="Toggle command console" />
+        </div>
+      </div>
+    </section>
   );
 }
 
-function HelpItem({ shortcut, action, color }: { shortcut: string; action: string; color: string }) {
+function HelpItem({ shortcut, action }: { shortcut: string; action: string }) {
   return (
-    <div className="flex items-center justify-between p-3 bg-[#313244]/50 rounded border border-[#45475a]">
-      <span className={`font-bold ${color}`}>{shortcut}</span>
-      <span className="text-[#bac2de] text-xs font-bold uppercase tracking-wider">{action}</span>
+    <div className="flex items-center justify-between rounded-lg border border-line bg-surface0 p-4">
+      <span className="font-bold text-yellow">{shortcut}</span>
+      <span className="text-sm text-subtext1">{action}</span>
     </div>
   );
 }
