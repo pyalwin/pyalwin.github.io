@@ -1,31 +1,25 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-});
+const title = "Arun Venkataramanan | Software Engineer";
+const description =
+  "Software engineer at Harvey. I build backend platforms, developer tools, and systems that help AI agents find the right context.";
 
 export const metadata: Metadata = {
-  title: "Arun Venkataramanan | Senior Software Engineer",
-  description: "Senior Software Engineer building reliable products, platforms, automation, and applied AI systems.",
-  keywords: ["Software Engineer", "Platform Engineering", "Product Engineering", "Automation", "GenAI", "Python", "TypeScript", "Bangalore"],
+  metadataBase: new URL("https://pyalwin.github.io"),
+  title,
+  description,
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", title, description, url: "/" },
+  twitter: { card: "summary", title, description },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${jetbrainsMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col font-sans">
-        {children}
-      </body>
+    <html lang="en">
+      <body>{children}</body>
     </html>
   );
 }
