@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const title = "Arun Venkataramanan | Software Engineer";
+const title = "Arun Venkataramanan | Infrastructure Engineer";
 const description =
-  "Software engineer at Harvey. I build backend platforms, developer tools, and systems that help AI agents find the right context.";
+  "Arun Venkataramanan, software engineer on the infrastructure team at Harvey. Backend platforms, integrations, and developer tools.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://pyalwin.github.io"),
@@ -19,7 +19,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body id="top">{children}</body>
     </html>
   );
 }
